@@ -1,3 +1,6 @@
+def product_detail(request, pk):
+	product = get_object_or_404(Product, pk=pk)
+	return render(request, 'products/productDetail.html', {'product': product})
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, Cart, CartItem, Order, OrderItem
 from django.contrib.auth.decorators import login_required
@@ -32,6 +35,21 @@ def add_to_cart(request, product_id):
 def cart_detail(request):
 	cart, created = Cart.objects.get_or_create(user=request.user)
 	items = cart.items.select_related('product')
+	if request.method == 'POST':
+		for item in items:
+			quantity = request.POST.get(f'quantity_{item.id}')
+			if quantity is not None:
+				try:
+					quantity = int(quantity)
+					if quantity > 0:
+						item.quantity = quantity
+						item.save()
+					else:
+						item.delete()
+				except ValueError:
+					pass
+		messages.success(request, "Cart updated.")
+		return redirect('products:cart_detail')
 	return render(request, 'products/cart.html', {'cart': cart, 'items': items})
 
 @login_required

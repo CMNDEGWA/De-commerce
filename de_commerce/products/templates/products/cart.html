@@ -1,18 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Your Cart</h1>
-<ul>
-    {% for item in items %}
-        <li>{{ item.product.name }} (x{{ item.quantity }}) - ${{ item.product.price }} each</li>
-    {% empty %}
-        <li>Your cart is empty.</li>
-    {% endfor %}
-</ul>
-{% if items %}
-<form action="{% url 'products:place_order' %}" method="post">
+<form method="post">
     {% csrf_token %}
-    <button type="submit">Place Order</button>
+    <ul>
+        {% for item in items %}
+            <li>
+                {{ item.product.name }} - ${{ item.product.price }} each<br>
+                Quantity: <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="0" max="{{ item.product.stock }}">
+                <span>Total: ${{ item.product.price|floatformat:2|add:item.quantity|floatformat:2 }}</span>
+            </li>
+        {% empty %}
+            <li>Your cart is empty.</li>
+        {% endfor %}
+    </ul>
+    {% if items %}
+        <button type="submit">Update Cart</button>
+    {% endif %}
 </form>
+{% if items %}
+    <form action="{% url 'products:place_order' %}" method="post" style="margin-top:1em;">
+        {% csrf_token %}
+        <button type="submit">Place Order</button>
+    </form>
 {% endif %}
 <a href="{% url 'products:product_list' %}">Continue Shopping</a>
 {% endblock %}
