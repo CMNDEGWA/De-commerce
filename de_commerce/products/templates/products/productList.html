@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Product List</h1>
+<form method="get">
+    <select name="category" onchange="this.form.submit()">
+        <option value="">All Categories</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if request.GET.category|default:'' == category.id|stringformat:'s' %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+    </select>
+</form>
+<ul>
+    {% for product in products %}
+        <li>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <p>Price: ${{ product.price }}</p>
+            <form action="{% url 'products:add_to_cart' product.id %}" method="post">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                <button type="submit">Add to Cart</button>
+            </form>
+        </li>
+    {% empty %}
+        <li>No products found.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'products:cart_detail' %}">View Cart</a>
+{% endblock %}

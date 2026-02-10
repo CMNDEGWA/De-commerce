@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Your Cart</h1>
+<ul>
+    {% for item in items %}
+        <li>{{ item.product.name }} (x{{ item.quantity }}) - ${{ item.product.price }} each</li>
+    {% empty %}
+        <li>Your cart is empty.</li>
+    {% endfor %}
+</ul>
+{% if items %}
+<form action="{% url 'products:place_order' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Place Order</button>
+</form>
+{% endif %}
+<a href="{% url 'products:product_list' %}">Continue Shopping</a>
+{% endblock %}
