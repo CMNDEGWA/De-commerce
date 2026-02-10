@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Order History</h2>
+{% if orders %}
+    <ul>
+    {% for order in orders %}
+        <li>
+            <a href="{% url 'products:order_detail' order.id %}">Order #{{ order.id }}</a> - {{ order.created_at|date:"Y-m-d H:i" }} - {{ order.get_status_display }}
+            <ul>
+                {% for item in order.items.all %}
+                    <li>{{ item.quantity }} x {{ item.product.name }} @ ${{ item.price }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no past orders.</p>
+{% endif %}
+<a href="{% url 'products:profile' %}">Back to Profile</a>
+{% endblock %}
