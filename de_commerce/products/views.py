@@ -1,36 +1,50 @@
-def product_detail(request, pk):
-	product = get_object_or_404(Product, pk=pk)
-	return render(request, 'products/productDetail.html', {'product': product})
+# Ensure all imports are at the top of the file
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, Cart, CartItem, Order, OrderItem
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.views import LoginView
+from django.urls import reverse
+from django.core.paginator import Paginator
+from .forms import OrderForm
+from django.db.models import Count
 
-def product_list(request):
-	category_id = request.GET.get('category')
-	if category_id:
-		products = Product.objects.filter(category_id=category_id)
+# User registration view
+def register(request):
+	if request.method == 'POST':
+		form = UserCreationForm(request.POST)
+		if form.is_valid():
+			user = form.save()
+			login(request, user)
+			return redirect('products:product_list')
 	else:
-		products = Product.objects.all()
-	categories = Category.objects.all()
-	return render(request, 'products/productList.html', {'products': products, 'categories': categories})
+		form = UserCreationForm()
+	return render(request, 'products/register.html', {'form': form})
 
+# User profile view
 @login_required
-@require_POST
-def add_to_cart(request, product_id):
-	product = get_object_or_404(Product, id=product_id)
-	cart, created = Cart.objects.get_or_create(user=request.user)
-	quantity = int(request.POST.get('quantity', 1))
-	cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-	if not created:
-		cart_item.quantity += quantity
-	else:
-		cart_item.quantity = quantity
-	cart_item.save()
-	messages.success(request, f"Added {product.name} to your cart.")
-	return redirect('products:cart_detail')
+def profile(request):
+	return render(request, 'products/profile.html')
+def product_detail(request, pk):
+	product = get_object_or_404(Product, pk=pk)
+	return render(request, 'products/productDetail.html', {'product': product})
 
+# User order history view
+@login_required
+def order_history(request):
+	orders = request.user.order_set.order_by('-created_at').prefetch_related('items__product')
+	return render(request, 'products/order_history.html', {'orders': orders})
+
+# User order detail view
+@login_required
+def order_detail(request, order_id):
+	order = get_object_or_404(Order, id=order_id, user=request.user)
+	return render(request, 'products/order_detail.html', {'order': order})
+
+# User cart view
 @login_required
 def cart_detail(request):
 	cart, created = Cart.objects.get_or_create(user=request.user)
@@ -52,21 +66,82 @@ def cart_detail(request):
 		return redirect('products:cart_detail')
 	return render(request, 'products/cart.html', {'cart': cart, 'items': items})
 
+# User cart add view
+@login_required
+@require_POST
+def add_to_cart(request, product_id):
+	product = get_object_or_404(Product, id=product_id)
+	cart, created = Cart.objects.get_or_create(user=request.user)
+	quantity = int(request.POST.get('quantity', 1))
+	cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+	if not created:
+		cart_item.quantity += quantity
+	else:
+		cart_item.quantity = quantity
+	cart_item.save()
+	messages.success(request, f"Added {product.name} to your cart.")
+	return redirect('products:cart_detail')
+
+# User cart place order view
 @login_required
 @require_POST
 def place_order(request):
-	cart = get_object_or_404(Cart, user=request.user)
-	if not cart.items.exists():
-		messages.error(request, "Your cart is empty.")
-		return redirect('products:cart_detail')
-	order = Order.objects.create(user=request.user)
-	for item in cart.items.all():
-		OrderItem.objects.create(
-			order=order,
-			product=item.product,
-			quantity=item.quantity,
-			price=item.product.price
-		)
-	cart.items.all().delete()
-	messages.success(request, "Order placed successfully!")
-	return redirect('products:product_list')
+    cart = get_object_or_404(Cart, user=request.user)
+    if not cart.items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect('products:cart_detail')
+
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
+            for item in cart.items.all():
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    quantity=item.quantity,
+                    price=item.product.price
+                )
+            cart.items.all().delete()
+            messages.success(request, "Order placed successfully!")
+            return redirect('products:product_list')
+    else:
+        form = OrderForm()
+
+    return render(request, 'products/place_order.html', {'form': form, 'cart': cart})
+
+# Home view for top 10 popular products
+def home(request):
+    popular_products = Product.objects.annotate(order_count=Count('orderitem')).order_by('-order_count')[:10]
+    return render(request, 'products/home.html', {'products': popular_products})
+
+# Updated product_list view for category filtering
+def product_list(request):
+    query = request.GET.get('q')
+    category_id = request.GET.get('category')
+    sort_by = request.GET.get('sort', 'name')
+
+    products = Product.objects.all()
+    if query:
+        products = products.filter(name__icontains=query)
+    if category_id:
+        products = products.filter(category_id=category_id)
+
+    if sort_by in ['name', 'price']:
+        products = products.order_by(sort_by)
+
+    paginator = Paginator(products, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    categories = Category.objects.all()
+    return render(request, 'products/productList.html', {'products': page_obj, 'categories': categories})
+
+# Updated CustomLoginView to use the correct template
+class CustomLoginView(LoginView):
+    template_name = 'products/login.html'  # Use the existing login.html template in the products folder
+
+    def get_success_url(self):
+        return self.get_redirect_url() or reverse('products:product_list')

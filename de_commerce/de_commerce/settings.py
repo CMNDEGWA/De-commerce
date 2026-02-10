@@ -1,3 +1,5 @@
+# Redirect to login page for @login_required
+LOGIN_URL = '/login/'
 """
 Django settings for de_commerce project.
 

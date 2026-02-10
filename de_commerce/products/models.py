@@ -12,11 +12,10 @@ class Category(models.Model):
 class Product(models.Model):
 
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
-    price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
-    stock = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    image = models.ImageField(upload_to='product_images/', blank=True, null=True)  # New field for product images
 
     def __str__(self):
         return self.name
@@ -48,7 +47,14 @@ class Order(models.Model):
     ]
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    updated_at = models.DateTimeField(auto_now=True)
+    shipping_address = models.TextField(default='Default Address')  # Default value for existing rows
+    phone_number = models.CharField(max_length=15)  # New field for phone number
+    payment_method = models.CharField(
+        max_length=50,
+        choices=[('Credit Card', 'Credit Card'), ('PayPal', 'PayPal')],
+        default='Credit Card'  # Default value for existing rows
+    )  # New field for payment method
 
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
@@ -64,4 +70,3 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity} x {self.product.name} (Order {self.order.id})"
 
-    
