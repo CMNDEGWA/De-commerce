@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>Product List</h1>
+<form method="get" action="{% url 'products:product_list' %}">
+    <input type="text" name="q" placeholder="Search products..." value="{{ request.GET.q }}">
+    <select name="sort">
+        <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Sort by Name</option>
+        <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Sort by Price</option>
+    </select>
+    <button type="submit">Apply</button>
+</form>
 <form method="get">
     <select name="category" onchange="this.form.submit()">
         <option value="">All Categories</option>
@@ -12,20 +20,31 @@
 <ul>
     {% for product in products %}
         <li>
-            <h3>
-                <a href="{% url 'products:product_detail' product.id %}">{{ product.name }}</a>
-            </h3>
-            <p>{{ product.description }}</p>
-            <p>Price: ${{ product.price }}</p>
-            <form action="{% url 'products:add_to_cart' product.id %}" method="post">
-                {% csrf_token %}
-                <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
-                <button type="submit">Add to Cart</button>
-            </form>
+            <div class="product">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% endif %}
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+                <p>Price: ${{ product.price }}</p>
+                <a href="{% url 'products:product_detail' product.pk %}">View Details</a>
+            </div>
         </li>
     {% empty %}
         <li>No products found.</li>
     {% endfor %}
 </ul>
+<!-- Display pagination controls -->
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}&sort={{ request.GET.sort }}">Previous</a>
+    {% endif %}
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}&sort={{ request.GET.sort }}">Next</a>
+    {% endif %}
+</div>
 <a href="{% url 'products:cart_detail' %}">View Cart</a>
 {% endblock %}
