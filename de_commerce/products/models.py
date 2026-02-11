@@ -20,6 +20,14 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def get_price(self):
+        """Return the price of the product."""
+        return self.price
+
+    def get_category(self):
+        """Return the category of the product."""
+        return self.category
+
 class Cart(models.Model):
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -27,6 +35,14 @@ class Cart(models.Model):
 
     def __str__(self):
         return f"Cart of {self.user.username}"
+
+    def total_items(self):
+        """Return the total number of items in the cart."""
+        return sum(item.quantity for item in self.items.all())
+
+    def total_price(self):
+        """Return the total price of all items in the cart."""
+        return sum(item.product.price * item.quantity for item in self.items.select_related('product').all())
 
 class CartItem(models.Model):
 
@@ -37,6 +53,10 @@ class CartItem(models.Model):
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
 
+    def get_total_price(self):
+        """Return the total price for this cart item."""
+        return self.product.price * self.quantity
+
 class Order(models.Model):
 
     STATUS_CHOICES = [
@@ -45,6 +65,12 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
         ('cancelled', 'Cancelled'),
     ]
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        help_text='Order status',
+    )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -59,6 +85,14 @@ class Order(models.Model):
     def __str__(self):
         return f"Order {self.id} by {self.user.username}"
 
+    def total_items(self):
+        """Return the total number of items in the order."""
+        return sum(item.quantity for item in self.items.all())
+
+    def total_price(self):
+        """Return the total price of the order."""
+        return sum(item.price * item.quantity for item in self.items.all())
+
 class OrderItem(models.Model):
 
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
@@ -69,4 +103,8 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} (Order {self.order.id})"
+
+    def get_total_price(self):
+        """Return the total price for this order item."""
+        return self.price * self.quantity
 
