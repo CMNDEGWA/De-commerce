@@ -4,5 +4,8 @@
 <p>Username: {{ user.username }}</p>
 <p>Email: {{ user.email }}</p>
 <a href="{% url 'products:order_history' %}">View Order History</a><br>
-<a href="{% url 'products:logout' %}">Logout</a>
+<form action="{% url 'products:logout' %}" method="post" style="display:inline;">
+	{% csrf_token %}
+	<button type="submit">Logout</button>
+</form>
 {% endblock %}

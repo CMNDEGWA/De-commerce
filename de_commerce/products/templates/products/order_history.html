@@ -11,6 +11,12 @@
                     <li>{{ item.quantity }} x {{ item.product.name }} @ ${{ item.price }}</li>
                 {% endfor %}
             </ul>
+            {% if order.status == 'pending' %}
+                <form action="{% url 'products:cancel_order' order.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Cancel Order</button>
+                </form>
+            {% endif %}
         </li>
     {% endfor %}
     </ul>

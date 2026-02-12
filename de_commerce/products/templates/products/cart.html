@@ -23,6 +23,10 @@
         {% csrf_token %}
         <button type="submit">Place Order</button>
     </form>
+    <form action="{% url 'products:clear_cart' %}" method="post" style="margin-top:1em;">
+        {% csrf_token %}
+        <button type="submit">Clear Cart</button>
+    </form>
 {% endif %}
 <a href="{% url 'products:product_list' %}">Continue Shopping</a>
 {% endblock %}
