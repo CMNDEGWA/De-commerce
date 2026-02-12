@@ -1,4 +1,4 @@
-# De-commerce: Backend & Frontend Overview
+# Django E-Commerce: Backend & Frontend Overview
 
 This project is split into two main parts:
 
