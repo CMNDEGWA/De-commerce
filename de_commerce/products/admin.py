@@ -10,9 +10,16 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-	list_display = ('name', 'category', 'price')
+	list_display = ('name', 'category', 'price', 'admin_image')
 	list_filter = ('category',)
 	search_fields = ('name',)
+
+	def admin_image(self, obj):
+		if obj.image:
+			return f'<img src="{obj.image.url}" style="max-height:50px;max-width:50px;" />'
+		return ""
+	admin_image.allow_tags = True
+	admin_image.short_description = 'Image'
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
