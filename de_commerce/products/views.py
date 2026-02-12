@@ -1,4 +1,3 @@
-# Ensure all imports are at the top of the file
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Category, Cart, CartItem, Order, OrderItem
 from django.contrib.auth.decorators import login_required
@@ -10,6 +9,25 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse
 from django.core.paginator import Paginator
 from .forms import OrderForm
+
+@login_required
+@require_POST
+def cancel_order(request, order_id):
+	"""Cancel a pending order for the logged-in user."""
+	order = get_object_or_404(Order, id=order_id, user=request.user, status='pending')
+	order.status = 'cancelled'
+	order.save()
+	messages.success(request, f"Order #{order.id} cancelled.")
+	return redirect('products:order_history')
+
+@login_required
+@require_POST
+def clear_cart(request):
+	"""Clear all items from the user's cart."""
+	cart = get_object_or_404(Cart, user=request.user)
+	cart.items.all().delete()
+	messages.success(request, "Cart cleared.")
+	return redirect('products:cart_detail')
 from django.db.models import Count
 
 
@@ -33,7 +51,7 @@ def profile(request):
 
 # User logout view
 class CustomLogoutView(LogoutView):
-	next_page = 'products:login'
+	next_page = 'products:home'
 def product_detail(request, pk):
 	"""Display product details."""
 	product = get_object_or_404(Product, pk=pk)
