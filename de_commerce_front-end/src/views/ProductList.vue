@@ -1,7 +1,7 @@
 <template>
   <div class="product-list">
     <h2>All Products</h2>
-    <div class="products-grid">
+    <div class="products-columns">
       <ProductCard v-for="product in products" :key="product.id" :product="product" />
     </div>
   </div>
@@ -17,7 +17,6 @@ const products = ref([]);
 onMounted(async () => {
   try {
     const response = await fetchProducts();
-    // Support both paginated and non-paginated API responses
     if (Array.isArray(response.data)) {
       products.value = response.data;
     } else if (Array.isArray(response.data.results)) {
@@ -46,10 +45,19 @@ h2 {
   margin-top: 1rem;
 }
 
-.products-grid {
+.products-columns {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 7rem 10vw; /* huge whitespace between columns and rows */
+  margin: 5rem 0 0 0;
+  justify-content: center;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .products-columns {
+    grid-template-columns: 1fr;
+    gap: 5rem 0;
+  }
 }
 </style>
