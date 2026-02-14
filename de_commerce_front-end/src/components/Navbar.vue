@@ -27,7 +27,7 @@
         </li>
         
         <li class="nav-item" v-if="!isAuthenticated">
-          <router-link class="nav-link" to="/register" active-class="active-page">
+          <router-link class="nav-link" to="/login" active-class="active-page">
             <i class="fas fa-user-plus me-2"></i> Login
           </router-link>
         </li>

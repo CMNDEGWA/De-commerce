@@ -1,3 +1,6 @@
+export function fetchCategories() {
+  return api.get('/categories/');
+}
 import api from './api';
 
 export function fetchProducts() {

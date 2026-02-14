@@ -3,9 +3,6 @@
   <div class="product-detail" v-if="product">
     <div class="detail-header">
       <button class="back-btn" @click="$router.back()">&larr; Back</button>
-      <span v-if="isAuthenticated" class="add-to-cart-btn" @click="toggleCart">
-        {{ inCart ? 'Remove from Cart' : 'Add to Cart' }}
-      </span>
     </div>
     <div class="detail-main">
       <div class="detail-image-container">
@@ -17,11 +14,16 @@
             <h2 class="product-title">{{ product.name }}</h2>
             <span class="product-category">{{ product.category?.name || 'Uncategorized' }}</span>
           </div>
+        </div>
+        <p class="product-description">{{ product.description }}</p>
+        <div v-if="isAuthenticated" class="add-to-cart-btn-wrapper">
+          <button class="add-to-cart-btn" @click="toggleCart">
+            {{ inCart ? 'Remove from Cart' : 'Add to Cart' }}
+          </button>
+        </div>
           <div class="detail-info-right">
             <span class="product-price">{{ formatPrice(product.price) }}</span>
           </div>
-        </div>
-        <p class="product-description">{{ product.description }}</p>
       </div>
     </div>
   </div>
@@ -62,25 +64,41 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.add-to-cart-btn-wrapper {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+:root  {
+    --text-color: #eeba0b;
+    --extra-color: #198754;
+    --paragraph-color: #f0f0f0;
+    --background-color: #062726;
+}
+
 .product-detail {
   max-width: 700px;
   margin: 4rem auto 2rem auto;
-  background: #fff;
+  background: var(--background-color);
+  color: var(--paragraph-color) ;
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 0 40px 10px rgba(82, 255, 134, 0.7);
   position: relative;
 }
+
 .detail-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2.5rem;
 }
+
 .back-btn {
   background: none;
   border: none;
-  color: #198754;
+  color: var(--extra-color);
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
@@ -88,12 +106,15 @@ onMounted(async () => {
   border-radius: 8px;
   transition: background 0.2s;
 }
+
 .back-btn:hover {
-  background: #f7f7f7;
+  color: var(--text-color);
 }
+
 .add-to-cart-btn {
-  background: #198754;
+  background: var(--text-color);
   color: #fff;
+  border: none;
   border-radius: 8px;
   padding: 0.7rem 2.2rem;
   font-size: 1rem;
@@ -102,39 +123,45 @@ onMounted(async () => {
   transition: background 0.2s;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
+
 .add-to-cart-btn:hover {
   background: #146c43;
 }
+
 .detail-main {
   display: flex;
   flex-direction: row;
   gap: 2.5rem;
 }
+
 .detail-image-container {
   flex: 0 0 240px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: #f7f7f7;
+  background: var(--background-color);
   border-radius: 12px;
   min-height: 220px;
   max-height: 260px;
   overflow: hidden;
 }
+
 .product-image {
   width: 100%;
   max-width: 220px;
   height: 220px;
   object-fit: contain;
   border-radius: 12px;
-  background: #f7f7f7;
+  background: var(--background-color);
 }
+
 .detail-info {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
+
 .detail-row {
   display: flex;
   flex-direction: row;
@@ -143,29 +170,40 @@ onMounted(async () => {
   gap: 1rem;
   margin-bottom: 1.2rem;
 }
+
 .detail-info-left {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.3rem;
 }
+
 .product-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #222;
+  color: var(--text-color);
   margin: 0;
   line-height: 1.2;
 }
+
 .product-category {
   font-size: 1rem;
-  color: #888;
+  color: var(--paragraph-color);
   font-weight: 500;
-  background: #f7f7f7;
+  background: var(--background-color);
   border-radius: 6px;
   padding: 0.2rem 0.8rem;
   margin-top: 0.2rem;
   display: inline-block;
+  transition: background 0.7s ease, color 0.7s ease;
+  border-bottom: 1.4px solid var(--text-color);
 }
+
+.product-category:hover {
+  background: var(--text-color);
+  color: var(--background-color);
+}
+
 .detail-info-right {
   display: flex;
   flex-direction: column;
@@ -179,9 +217,10 @@ onMounted(async () => {
   color: #eeba0b;
   margin-bottom: 0.5rem;
 }
+
 .product-description {
   font-size: 1.08rem;
-  color: #444;
+  color: var(--paragraph-color);
   margin-top: 0.5rem;
   line-height: 1.6;
 }
