@@ -20,6 +20,7 @@
           <button class="add-to-cart-btn" @click="toggleCart">
             {{ inCart ? 'Remove from Cart' : 'Add to Cart' }}
           </button>
+          <router-link to="/cart" class="go-to-cart-link">Go to Cart &rarr;</router-link>
         </div>
           <div class="detail-info-right">
             <span class="product-price">{{ formatPrice(product.price) }}</span>
@@ -33,15 +34,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchProduct } from '../services/products';
+import { useAuthStore } from '../store/auth';
+import { useCartStore } from '../store/cart';
+import { useOrderStore } from '../store/orders';
+import { storeToRefs } from 'pinia';
 
 const route = useRoute();
 const router = useRouter();
 const product = ref(null);
-const isAuthenticated = ref(!!localStorage.getItem('isAuthenticated'));
-const inCart = ref(false);
+const cart = useCartStore();
+const orders = useOrderStore();
+const auth = useAuthStore();
+const { isAuthenticated } = storeToRefs(auth);
+
+const inCart = computed(() => {
+  return cart.items.some(i => i.product.id === product.value?.id);
+});
 
 function formatPrice(price) {
   if (price == null) return '';
@@ -49,14 +60,21 @@ function formatPrice(price) {
 }
 
 function toggleCart() {
-  inCart.value = !inCart.value;
-  // Here you would call addToCart/removeFromCart API
+  if (!product.value) return;
+  if (inCart.value) {
+    cart.remove(product.value.id);
+    orders.addOrder(product.value, 'pending');
+  } else {
+    cart.add(product.value, 1);
+  }
 }
 
 onMounted(async () => {
   try {
     const response = await fetchProduct(route.params.id);
     product.value = response.data;
+    cart.load();
+    orders.load();
   } catch (error) {
     product.value = null;
   }

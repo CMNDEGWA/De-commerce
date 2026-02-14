@@ -15,17 +15,16 @@
             <i class="fas fa-building me-2"></i> Products
           </router-link>
         </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/cart" active-class="active-page">
-            <i class="fas fa-shopping-cart me-2"></i> Cart
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/orders" active-class="active-page">
-            <i class="fas fa-box me-2"></i> Orders
-          </router-link>
-        </li>
-        
+          <li class="nav-item" v-if="isAuthenticated">
+            <router-link class="nav-link" to="/cart" active-class="active-page">
+              <i class="fas fa-shopping-cart me-2"></i> Cart
+            </router-link>
+          </li>
+          <li class="nav-item" v-if="isAuthenticated">
+            <router-link class="nav-link" to="/orders" active-class="active-page">
+              <i class="fas fa-box me-2"></i> Orders
+            </router-link>
+          </li>
         <li class="nav-item" v-if="!isAuthenticated">
           <router-link class="nav-link" to="/login" active-class="active-page">
             <i class="fas fa-user-plus me-2"></i> Login
@@ -50,24 +49,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
-
 import { logoutUser } from '../services/auth';
-const isAuthenticated = ref(!!localStorage.getItem('isAuthenticated'));
+import { useAuthStore } from '../store/auth';
+import { storeToRefs } from 'pinia';
+
+const auth = useAuthStore();
+const { isAuthenticated } = storeToRefs(auth);
 const router = useRouter();
 
 async function logout() {
   try {
     await logoutUser();
   } catch {}
-  isAuthenticated.value = false;
-  localStorage.removeItem('isAuthenticated');
+  auth.logout();
   router.push('/login');
 }
 
-// Ensure Font Awesome is loaded for icons
 onMounted(() => {
   if (!document.querySelector('link[href*="font-awesome"]')) {
     const link = document.createElement('link');
@@ -75,9 +74,9 @@ onMounted(() => {
     link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';
     document.head.appendChild(link);
   }
-  // Listen for login/logout events
+  // Sync auth state if localStorage changes (e.g., in another tab)
   window.addEventListener('storage', () => {
-    isAuthenticated.value = !!localStorage.getItem('isAuthenticated');
+    auth.sync();
   });
 });
 </script>

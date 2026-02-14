@@ -14,5 +14,7 @@ router.register(r'api/carts', CartViewSet, basename='cart')
 router.register(r'api/orders', OrderViewSet, basename='order')
 
 urlpatterns = [
+    path('api/register/', views.RegisterAPIView.as_view(), name='api-register'),
+    path('api/login/', views.LoginAPIView.as_view(), name='api-login'),
     path('', include(router.urls)),
 ]
