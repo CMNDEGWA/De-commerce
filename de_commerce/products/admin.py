@@ -39,5 +39,7 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-	list_display = ('order', 'product', 'quantity', 'price')
-	search_fields = ('order__id', 'product__name')
+	# Display product details and order quantity/price for each item
+	# Note: OrderItems typically viewed through their parent Order
+	list_display = ('product', 'quantity', 'price')
+	search_fields = ('product__name',)
