@@ -21,7 +21,8 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, ProductSerializer
+from .models import Product
 
 # ============================================================================
 # AUTHENTICATION VIEWS (NO LOGIN REQUIRED)
@@ -114,4 +115,58 @@ class LoginAPIView(APIView):
 				return Response({'success': True, 'message': 'Login successful.'}, status=status.HTTP_200_OK)
 			return Response({'success': False, 'message': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 		return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SessionCartAPIView(APIView):
+	"""
+	API View for a session-backed cart for anonymous users.
+
+	Endpoint: /api/session-cart/
+
+	Permission: AllowAny (no login required)
+
+	Methods:
+	- GET: return current session cart items with product details
+	- POST: add product to session cart (body: {product_id, quantity})
+	- DELETE: clear the session cart
+	"""
+	permission_classes = [AllowAny]
+
+	def get(self, request):
+		cart = request.session.get('cart', {})
+		items = []
+		if cart:
+			product_ids = [int(pid) for pid in cart.keys()]
+			products = Product.objects.filter(id__in=product_ids)
+			prod_map = {p.id: p for p in products}
+			for pid_str, qty in cart.items():
+				pid = int(pid_str)
+				product = prod_map.get(pid)
+				if product:
+					items.append({'product': ProductSerializer(product).data, 'quantity': qty})
+		return Response({'items': items}, status=status.HTTP_200_OK)
+
+	def post(self, request):
+		product_id = request.data.get('product_id') or request.data.get('id')
+		if product_id is None:
+			return Response({'success': False, 'message': 'product_id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+		try:
+			product = Product.objects.get(id=product_id)
+		except Product.DoesNotExist:
+			return Response({'success': False, 'message': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+		try:
+			quantity = int(request.data.get('quantity', 1))
+		except (TypeError, ValueError):
+			quantity = 1
+		cart = request.session.get('cart', {})
+		key = str(product.id)
+		cart[key] = cart.get(key, 0) + quantity
+		request.session['cart'] = cart
+		request.session.modified = True
+		return Response({'success': True, 'message': 'Added to session cart.'}, status=status.HTTP_200_OK)
+
+	def delete(self, request):
+		request.session['cart'] = {}
+		request.session.modified = True
+		return Response({'success': True, 'message': 'Session cart cleared.'}, status=status.HTTP_200_OK)
 

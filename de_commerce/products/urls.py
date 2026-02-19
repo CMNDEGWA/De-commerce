@@ -53,6 +53,9 @@ urlpatterns = [
     # POST /api/login/ - Authenticate user and create session (AllowAny - no login required)
     path('api/login/', views.LoginAPIView.as_view(), name='api-login'),
     
+    # Session-backed cart for anonymous users (AllowAny)
+    path('api/session-cart/', views.SessionCartAPIView.as_view(), name='api-session-cart'),
+    
     # Auto-generated routes from DefaultRouter (categories, products, carts, orders)
     path('', include(router.urls)),
     
