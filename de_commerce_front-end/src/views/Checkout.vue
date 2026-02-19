@@ -32,8 +32,15 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-// Assume cart is passed as a prop or fetched from a store/service
-const cart = ref({ items: [] });
+import { useAuthStore } from '../store/auth';
+import { useCartStore } from '../store/cart';
+import { storeToRefs } from 'pinia';
+
+const auth = useAuthStore();
+const { isAuthenticated } = storeToRefs(auth);
+const cartStore = useCartStore();
+cartStore.load();
+const cart = ref({ items: cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity })) });
 const billing = ref({ name: '', address: '', phone: '' });
 const paymentType = ref('credit');
 const router = useRouter();
@@ -44,6 +51,13 @@ function formatPrice(price) {
 }
 
 function submitOrder() {
+  // Require login before placing order
+  if (!isAuthenticated.value) {
+    // Redirect to login; preserve next step if desired
+    router.push('/login');
+    return;
+  }
+
   // Save order logic here (API call)
   // On success:
   router.push('/orders');

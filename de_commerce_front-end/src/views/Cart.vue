@@ -45,9 +45,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { fetchCart } from '../services/cart';
+import { useCartStore } from '../store/cart';
+import { useAuthStore } from '../store/auth';
+import { storeToRefs } from 'pinia';
 
 const cart = ref(null);
 const loading = ref(true);
+const cartStore = useCartStore();
+const auth = useAuthStore();
+const { isAuthenticated } = storeToRefs(auth);
 const paymentMethod = ref('card');
 const promoCode = ref('');
 const promoApplied = ref(false);
@@ -75,12 +81,22 @@ function applyPromo() {
 }
 
 onMounted(async () => {
-  try {
-    const response = await fetchCart();
-    cart.value = Array.isArray(response.data) ? response.data[0] : response.data;
-  } catch (error) {
-    cart.value = null;
-  } finally {
+  // Always load local cart from localStorage for instant UI
+  cartStore.load();
+
+  if (isAuthenticated.value) {
+    try {
+      const response = await fetchCart();
+      cart.value = Array.isArray(response.data) ? response.data[0] : response.data;
+    } catch (error) {
+      // If backend cart fetch fails, fall back to local cart store
+      cart.value = { items: cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity })) };
+    } finally {
+      loading.value = false;
+    }
+  } else {
+    // Unauthenticated users see local cart only
+    cart.value = { items: cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity })) };
     loading.value = false;
   }
 });

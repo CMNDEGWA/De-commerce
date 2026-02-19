@@ -74,5 +74,5 @@ import api from './api';
  * - Backend would return only authenticated user's data
  */
 export function fetchProfile() {
-  return api.get('api/profile/');
+  return api.get('profile/');
 }

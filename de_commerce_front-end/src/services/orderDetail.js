@@ -100,5 +100,5 @@ import api from './api';
  * using a single import to reduce code duplication
  */
 export function fetchOrder(orderId) {
-  return api.get(`api/orders/${orderId}/`);
+  return api.get(`orders/${orderId}/`);
 }

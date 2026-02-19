@@ -16,7 +16,7 @@
           </div>
         </div>
         <p class="product-description">{{ product.description }}</p>
-        <div v-if="isAuthenticated" class="add-to-cart-btn-wrapper">
+        <div class="add-to-cart-btn-wrapper">
           <button class="add-to-cart-btn" @click="toggleCart">
             {{ inCart ? 'Remove from Cart' : 'Add to Cart' }}
           </button>

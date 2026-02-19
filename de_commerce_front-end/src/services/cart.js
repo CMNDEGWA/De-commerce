@@ -74,7 +74,7 @@ import api from './api';
  * - Even if user ID guessed, backend filters to authenticated user
  */
 export function fetchCart() {
-  return api.get('api/carts/');
+  return api.get('carts/');
 }
 
 /**
@@ -129,7 +129,7 @@ export function fetchCart() {
  * for managing cart items. API calls are secondary for data persistence.
  */
 export function addToCart(productId, quantity = 1) {
-  return api.post('api/carts/', { product: productId, quantity });
+  return api.post('carts/', { product: productId, quantity });
 }
 
 /**
@@ -164,5 +164,5 @@ export function addToCart(productId, quantity = 1) {
  * Would be useful for syncing backend before checkout.
  */
 export function clearCart() {
-  return api.delete('api/carts/clear/');
+  return api.delete('carts/clear/');
 }

@@ -44,7 +44,7 @@ import api from './api';
  * - User can filter products by category
  */
 export function fetchCategories() {
-  return api.get('api/categories/');
+  return api.get('categories/');
 }
 
 /**
@@ -98,7 +98,7 @@ export function fetchCategories() {
  * Note: Category field is nested (full object), not just ID
  */
 export function fetchProducts() {
-  return api.get('api/products/');
+  return api.get('products/');
 }
 
 /**
@@ -149,5 +149,5 @@ export function fetchProducts() {
  * - Product added to cart is stored in useCartStore (localStorage)
  */
 export function fetchProduct(id) {
-  return api.get(`api/products/${id}/`);
+  return api.get(`products/${id}/`);
 }
