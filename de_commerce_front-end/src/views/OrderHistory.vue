@@ -40,10 +40,10 @@ onMounted(() => {
 
 <style scoped>
 :root  {
-    --text-color: #eeba0b;
-    --extra-color: #198754;
-    --paragraph-color: #f0f0f0;
-    --background-color: #062726;
+  --text-color: #92140c;
+  --extra-color: #fff8f0;
+  --paragraph-color: #fff8f0;
+  --background-color: #1e1e24;
 }
 
 .order-history {
@@ -53,7 +53,7 @@ onMounted(() => {
   color: var(--paragraph-color);
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   border-radius: 18px;
-  box-shadow: 0 0 40px 10px rgba(82, 255, 134, 0.7);
+  box-shadow: 0 0 40px 10px rgba(146, 20, 12, 0.08);
   position: relative;
 }
 

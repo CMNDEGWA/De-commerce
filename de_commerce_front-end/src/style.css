@@ -1,10 +1,10 @@
 @import url('./assets/styles/portfolio.css');
 
 :root  {
-    --text-color: #eeba0b;
-    --extra-color: #198754;
-    --paragraph-color: #f0f0f0;
-    --background-color: #062726;
+  --text-color: #191919;
+  --extra-color: #f15025;
+  --paragraph-color: #191919;
+  --background-color: #fcfffc;
 }
 
 a {

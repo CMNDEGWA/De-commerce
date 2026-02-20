@@ -126,10 +126,10 @@ async function handleRegister() {
 }
 .register-container {
   /* Theme Variables from ProductDetails */
-  --text-color: #eeba0b;
-  --extra-color: #198754;
-  --paragraph-color: #f0f0f0;
-  --background-color: #062726;
+  --text-color: #92140c;
+  --extra-color: #fff8f0;
+  --paragraph-color: #fff8f0;
+  --background-color: #1e1e24;
   
   display: flex;
   justify-content: center;
@@ -146,8 +146,8 @@ async function handleRegister() {
   padding: 2.5rem;
   border-radius: 18px;
   /* Matching the ProductDetails glowing shadow */
-  box-shadow: 0 0 40px 10px rgba(82, 255, 134, 0.25);
-  border: 1px solid rgba(82, 255, 134, 0.1);
+  box-shadow: 0 0 40px 10px rgba(146, 20, 12, 0.08);
+  border: 1px solid rgba(146, 20, 12, 0.05);
 }
 
 .register-title {
@@ -186,7 +186,7 @@ input {
 input:focus {
   border-color: var(--text-color);
   background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 8px rgba(238, 186, 11, 0.3);
+  box-shadow: 0 0 8px rgba(146, 20, 12, 0.12);
 }
 
 .register-btn {

@@ -85,7 +85,7 @@ input, select {
   border: 1px solid #ccc;
 }
 button[type="submit"] {
-  background: #198754;
+  background: #fff8f0;
   color: #fff;
   border: none;
   border-radius: 8px;

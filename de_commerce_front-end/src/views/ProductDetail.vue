@@ -89,10 +89,10 @@ onMounted(async () => {
 }
 
 :root  {
-    --text-color: #eeba0b;
-    --extra-color: #198754;
-    --paragraph-color: #f0f0f0;
-    --background-color: #062726;
+  --text-color: #191919;
+  --extra-color: #f15025;
+  --paragraph-color: #191919;
+  --background-color: #fcfffc;
 }
 
 .product-detail {
@@ -102,7 +102,7 @@ onMounted(async () => {
   color: var(--paragraph-color) ;
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   border-radius: 18px;
-  box-shadow: 0 0 40px 10px rgba(82, 255, 134, 0.7);
+  box-shadow: 0 0 40px 10px rgba(241, 80, 37, 0.08);
   position: relative;
 }
 
@@ -232,7 +232,7 @@ onMounted(async () => {
 .product-price {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #eeba0b;
+  color: var(--text-color);
   margin-bottom: 0.5rem;
 }
 

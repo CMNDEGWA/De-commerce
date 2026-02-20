@@ -94,10 +94,10 @@ async function handleLogin() {
 }
 /* Matching the Color Palette from ProductDetails */
 .login-container {
-  --text-color: #eeba0b;
-  --extra-color: #198754;
-  --paragraph-color: #f0f0f0;
-  --background-color: #062726;
+  --text-color: #92140c;
+  --extra-color: #fff8f0;
+  --paragraph-color: #fff8f0;
+  --background-color: #1e1e24;
   
   display: flex;
   justify-content: center;

@@ -65,10 +65,10 @@ onMounted(async () => {
 <style scoped>
 /* Consistency with ProductDetails and Login theme */
 .product-list {
-  --text-color: #eeba0b;
-  --extra-color: #198754;
-  --paragraph-color: #f0f0f0;
-  --background-color: #062726;
+  --text-color: #191919;
+  --extra-color: #f15025;
+  --paragraph-color: #191919;
+  --background-color: #fcfffc;
   
   padding: 2rem;
   min-height: 100vh;
@@ -80,7 +80,7 @@ onMounted(async () => {
   font-size: 2.2rem;
   font-weight: 800;
   margin-bottom: 2rem;
-  text-shadow: 0 0 15px rgba(238, 186, 11, 0.3);
+  text-shadow: 0 0 15px rgba(241, 80, 37, 0.12);
 }
 
 .category-dropdown-filter {
@@ -111,12 +111,12 @@ onMounted(async () => {
   cursor: pointer;
   outline: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(25, 135, 84, 0.2);
+  box-shadow: 0 4px 15px rgba(241, 80, 37, 0.10);
 }
 
 .category-dropdown:focus {
   border-color: var(--text-color);
-  box-shadow: 0 0 10px rgba(238, 186, 11, 0.4);
+  box-shadow: 0 0 10px rgba(241, 80, 37, 0.12);
 }
 
 .products-columns {

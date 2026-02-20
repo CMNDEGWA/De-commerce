@@ -55,10 +55,10 @@
 
 <style scoped>
 .business-footer {
-  /* Using your specific palette */
-  --text-color: #eeba0b;
-  --background-color: #062726;
-  --navbar-bg: rgba(6, 39, 37, 0.9); /* Slightly more opaque for readability */
+  /* Using new palette (depth-focused) */
+  --text-color: #191919;
+  --background-color: #fcfffc;
+  --navbar-bg: rgba(252, 255, 252, 0.9); /* Slightly more opaque for readability */
   
   background-color: var(--navbar-bg);
   backdrop-filter: blur(15px);
@@ -143,7 +143,7 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: rgba(238, 186, 11, 0.1);
+  background: rgba(146, 20, 12, 0.06);
   color: var(--text-color);
   display: flex;
   align-items: center;
@@ -163,7 +163,7 @@
   background: rgba(255, 255, 255, 0.1);
   padding: 5px;
   border-radius: 12px;
-  border: 1px solid rgba(238, 186, 11, 0.3);
+  border: 1px solid rgba(146, 20, 12, 0.16);
 }
 
 .newsletter-input input {
@@ -191,7 +191,7 @@
 
 /* Bottom Bar */
 .footer-bottom {
-  border-top: 1px solid rgba(238, 186, 11, 0.1);
+  border-top: 1px solid rgba(146, 20, 12, 0.06);
   padding: 25px 0;
   font-size: 0.85rem;
   opacity: 0.6;
