@@ -1,16 +1,15 @@
 <template>
-  <div class="container">
   <div class="home">
     <header class="hero">
       <div class="hero-main-content">
         <div class="hero-image-wrapper">
           <div class="hero-content">
-            <h1 class="hero-title">Karibu<br/> Kwa Jirani, Merchants.</h1>
-            <p class="hero-lead">Connecting local makers and curious buyers — discover handcrafted goods, stories, and small businesses from your community.</p>
+            <h1 class="hero-title">Karibu<br/> Kwa Jirani, The Merchants.</h1>
+            <p class="hero-lead"><em>Jirani:</em> It is a Swahili word meaining Neighbor.</p>
           </div>
-          <img src="../assets/img/Home.png" alt="Shopping" class="hero-img" />
+          <img src="../assets/img/Merchants.jpg" alt="Shopping" class="hero-img" />
         </div>
-
+        <button class="get-started-btn">Get Started</button>
       </div>
       <p class="hero-subtitle">
         When you dive into this world, you are not just a buyer. You are part of a community that appreciates 
@@ -66,8 +65,7 @@
                <i class="fas fa-arrow-right me-2"></i>View Product</router-link>
       </div>
     </section>
-
-    </div></div>
+  </div>
 </template>
 
 <script>
@@ -109,7 +107,7 @@ export default {
 }
 
 .hero-content {
-  margin: 4rem 0;
+  margin: 1.4rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -117,8 +115,10 @@ export default {
 }
 
 .hero-lead {
-  margin-top: 1rem;
-  color: rgba(25,25,25,0.85);
+  margin: 2rem 0;
+  color: var(--paragraph-color);
+  background-color: var(--extra-color);
+  padding: 2rem;
   font-size: 1.08rem;
   font-weight: 400;
   text-align: center;
@@ -148,41 +148,18 @@ export default {
 .hero-img {
   width: 100%;
   height: auto;
-  border-radius: 20px;
-  border: 2px solid var(--text-color);
+  border-top: 2px solid var(--text-color);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
   display: block;
 }
 
-/* overlay sits above the image and provides depth + smooth placement */
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  pointer-events: none; /* allow clicks to pass except on interactive elements */
-  padding: 28px;
-  gap: 12px;
-}
-
-.hero-overlay-top {
-  position: absolute;
-  top: 28px; /* place near the top-right of the image */
-  right: 48px; /* nudge toward the right side of the image */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 36px; /* ensure hero-span sits 36px below hero-title */
-  pointer-events: auto; /* allow interactions for inner text if needed */
-  max-width: 55%; /* keep text readable and not overflow image */
-}
-
 /* Title sits near the top-right of the image */
 .hero-title {
-  pointer-events: auto;
-  margin: 0;
-  font-size: 3rem;
+  font-family: "Cormorant SC", serif;
   font-weight: 800;
+  pointer-events: auto;
+  margin: 2rem 0;
+  font-size:3.2rem;
   color: var(--text-color);
   text-align: right;
   letter-spacing: 2px;
@@ -244,7 +221,9 @@ export default {
   letter-spacing: 1.4px;
   font-weight: 300;
   color: var(--text-color);
-  padding: 3rem 6rem;
+  border-top: 1.4px solid var(--extra-color);
+  margin: 3rem 0;
+  padding: 7rem 6rem;
   height: auto;
 }
 
