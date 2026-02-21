@@ -54,15 +54,15 @@
           </ul>
         </div>
         <div class="about-features">
-          <div class="about-feature-box">
+          <div class="about-feature-box Mission">
             <h3>Mission</h3>
             <p>To empower local merchants and artisans by providing a platform that connects them to a global marketplace, fostering economic growth and cultural exchange.</p>
           </div>
-          <div class="about-feature-box">
+          <div class="about-feature-box Vision">
             <h3>Vision</h3>
             <p>To be a leading force in sustainable commerce, where every transaction supports communities and preserves cultural heritage, aligned with international standards and environmental stewardship.</p>
           </div>
-          <div class="about-feature-box">
+          <div class="about-feature-box Goals">
             <h3>Goals</h3>
             <ul>
               <li>Promote fair trade and ethical business practices worldwide.</li>
@@ -247,7 +247,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 25px;
-  margin: 5rem 0;
+  margin: 8rem 0;
   height: 36vh;
 }
 
@@ -314,6 +314,8 @@ export default {
   color: var(--background-color);
   border-radius: 0;
   padding: 2.2rem 2.5rem;
+  margin: 8rem 0;
+  height: 42vh;
   font-family: "Montserrat", sans-serif;
 }
 
@@ -328,9 +330,17 @@ export default {
   letter-spacing: 1px;
 }
 
+.about-story p {
+  margin-top: 4.9rem;
+}
+
+.about-values {
+  margin: 4rem 0;
+}
+
 .about-values ul {
   list-style: none;
-  margin: 0;
+  margin-top: 2.1rem;
   padding-left: 1.2em;
 }
 
@@ -350,7 +360,7 @@ export default {
   flex-wrap: wrap;
   gap: 2.5rem;
   justify-content: space-between;
-  margin-top: 2.5rem;
+  margin: 8rem 0;
 }
 
 
@@ -360,16 +370,37 @@ export default {
   border: 1.2px solid var(--text-color);
   border-radius: 0;
   padding: 2rem 1.5rem;
-  box-shadow: 0 2px 10px rgba(241,80,37,0.06);
   font-family: "Montserrat", sans-serif;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  transition: all 0.7s ease;
+}
+
+.about-features .Mission {
+  border-right: none;
+}
+
+.about-features .Mission:hover {
+  border-top-left-radius: 21px;
+  border-bottom-left-radius: 21px;
+}
+
+.about-features .Goals {
+  border-left: none;
+}
+
+.about-features .Goals:hover {
+  border-top-right-radius: 21px;
+  border-bottom-right-radius: 21px;
+}
+
+.about-features .Vision:hover {
+  border-radius: 21px;
 }
 
 .about-feature-box:hover h3{
   color: var(--text-color);
-  text-transform: uppercase;
 }
 
 .about-feature-box p {
