@@ -1,9 +1,10 @@
-<template>
+<template> 
   <div class="newsletter-section">
     <div class="newsletter-content">
       <p class="newsletter-title">Want to stay in touch? Sign up to receive news and updates from the Jirani Merchants team.</p>
       <div class="newsletter-form">
-        <input type="email" placeholder="Email Address" class="newsletter-input-field" />
+        <input type="email" placeholder="@gmail |  @proton.me | @tutamail.com"
+         class="newsletter-input-field" />
         <button class="newsletter-signup-btn">SIGN UP</button>
       </div>
       <p class="newsletter-privacy">We respect your privacy.</p>
@@ -18,7 +19,7 @@
         <li><a href="#">Contact</a></li>
       </ul>
       <div class="footer-logo-wrapper">
-        <span class="footer-logo">M</span>
+        <span class="footer-logo">J</span>
       </div>
     </div>
   </footer>
@@ -48,42 +49,35 @@ export default {
 </script>
 
 <style scoped>
-.business-footer {
-  background: var(--footer-bg);
-  color: var(--footer-text);
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  z-index: 10;
-  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.18);
-  padding: 0;
-  font-family: "Montserrat", sans-serif;
-}
+
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* Use page palette and fonts */
   :root {
-    --footer-bg: #191919;
-    --footer-text: #fcfffc;
-    --footer-accent: #f15025;
-    --footer-link-hover: #f15025;
+  --text-color: #191919;
+  --extra-color: #f15025;
+  --paragraph-color: #191919;
+  --background-color: #fcfffc;
+  /* semi-transparent version for the glass effect */
+  --navbar-bg: rgba(252, 255, 252, 0.9); 
   }
 
   .newsletter-section {
-    background: #636973;
-    color: var(--footer-text);
+    background: var(--paragraph-color);
+    color: var(--background-color);
     padding: 60px 0 30px 0;
     text-align: center;
-    margin: 11.5rem 0;
+    margin: 1rem 0;
     font-family: "Montserrat", sans-serif;
   }
 
   .newsletter-title {
-    font-family: "Montserrat", sans-serif;
-    font-size: 1.2rem;
+    font-family: "Jersey 10", sans-serif;
+    font-size: 1.6rem;
     margin-bottom: 30px;
-    letter-spacing: 1px;
+    letter-spacing: 1.4px;
   }
+
   .newsletter-form {
     display: flex;
     justify-content: center;
@@ -91,55 +85,58 @@ export default {
     gap: 18px;
     margin-bottom: 18px;
   }
+
   .newsletter-input-field {
     padding: 18px 32px;
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     border: none;
     border-radius: 0;
     background: var(--footer-text);
-    color: #636973;
-    font-family: "Montserrat", sans-serif;
-    width: 320px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    color: var(--extra-color);
+    font-family: "Jersey 10", sans-serif;
+    width: 420px;
   }
+
   .newsletter-signup-btn {
-    padding: 18px 32px;
-    font-size: 1.1rem;
-    border: none;
+    padding: 0.4rem 3rem;
+    font-size: 1.4rem;
     border-radius: 0;
-    background: var(--footer-accent);
-    color: var(--footer-text);
-    font-family: "Montserrat", sans-serif;
-    font-weight: 700;
+    background: var(--background-color);
+    color: var(--extra-color);
+    font-family: "Jersey 10", sans-serif;
     letter-spacing: 1px;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: background 0.3s, color 0.3s;
+    transition: background 0.7s, color 0.7s;
   }
+  
   .newsletter-signup-btn:hover {
-    background: var(--footer-bg);
-    color: var(--footer-accent);
+    background: var(--paragraph-color);
+    color: var(--background-color);
+    border-right: 1.4px solid var(--extra-color);
   }
+
   .newsletter-privacy {
-    font-size: 1rem;
+    font-size: 1.2rem;
+    letter-spacing: 7px;
     opacity: 0.7;
     margin-top: 18px;
-    font-family: "Montserrat", sans-serif;
+    font-family: "Jersey 10", sans-serif;
   }
 
   /* Black footer bar stuck at bottom */
   .business-footer {
-    background: var(--footer-bg);
-    color: var(--footer-text);
+    background: var(--background-color);
+    color: var(--text-color);
     width: 100vw;
     position: sticky;
     bottom: 0;
     left: 0;
     z-index: 10;
-    box-shadow: 0 -2px 16px rgba(0,0,0,0.18);
     padding: 0;
-    font-family: "Montserrat", sans-serif;
+    font-family: "Jersey 10", sans-serif;
   }
+
   .footer-bottom-content {
     display: flex;
     flex-direction: column;
@@ -147,45 +144,55 @@ export default {
     justify-content: center;
     padding: 32px 0 18px 0;
   }
+
   .footer-links-row {
     display: flex;
     justify-content: center;
-    gap: 48px;
+    gap: 21rem;
     list-style: none;
-    margin: 0 0 18px 0;
+    margin: 2.8rem 0;
     padding: 0;
   }
+
   .footer-links-row li a {
-    color: var(--footer-text);
-    font-family: "Montserrat", sans-serif;
-    font-size: 1.1rem;
-    text-decoration: underline;
+    color: var(--text-color);
+    font-family: "Jersey 10", sans-serif;
+    font-size: 1.5rem;
+    text-decoration: none;
     opacity: 0.9;
-    transition: color 0.3s, opacity 0.3s;
+    transition: color 0.7s, opacity 0.7s;
+    padding: 1rem 3rem;
   }
+
   .footer-links-row li a:hover {
-    color: var(--footer-link-hover);
+    color: var(--extra-color);
+    background-color: var(--paragraph-color);
     opacity: 1;
   }
+
   .footer-logo-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 8px;
+    margin-top: 2.1rem;
   }
+
   .footer-logo {
     display: inline-block;
-    font-family: "Montserrat", sans-serif;
-    font-size: 3.2rem;
-    color: var(--footer-accent);
-    background: var(--footer-text);
-    border-radius: 50%;
-    width: 64px;
-    height: 64px;
-    line-height: 64px;
+    font-family: "Jersey 10", sans-serif;
+    font-size: 4.2rem;
+    color: var(--background-color);
+    background: var(--extra-color);
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
     text-align: center;
-    font-weight: 900;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.7s ease;
+  }
+
+  .footer-logo:hover {
+    background-color: var(--background-color);
+    color: var(--extra-color);
   }
 
   @media (max-width: 992px) {
