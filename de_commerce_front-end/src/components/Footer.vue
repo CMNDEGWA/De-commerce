@@ -10,7 +10,8 @@
       <p class="newsletter-privacy">We respect your privacy.</p>
     </div>
   </div>
-  <footer class="business-footer" v-show="isFooterVisible">
+  <div class="footer-spacer" aria-hidden="true"></div>
+  <footer :class="['business-footer', { 'footer-visible': isFooterVisible }]">
     <div class="footer-bottom-content">
       <ul class="footer-links-row">
         <div class="footer-links-left">
@@ -46,7 +47,8 @@ export default {
     checkScrollPosition() {
       const scrollPosition = window.scrollY + window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      this.isFooterVisible = scrollPosition >= documentHeight;
+      const distanceFromBottom = Math.max(0, documentHeight - scrollPosition);
+      this.isFooterVisible = distanceFromBottom <= 4; // small threshold to avoid flicker
     },
   },
 };
@@ -71,7 +73,7 @@ export default {
     color: var(--background-color);
     padding: 60px 0 30px 0;
     text-align: center;
-    margin: 1rem 0;
+    margin: 7rem 0;
     font-family: "Montserrat", sans-serif;
   }
 
@@ -132,13 +134,25 @@ export default {
   .business-footer {
     background: var(--background-color);
     color: var(--text-color);
-    width: 100vw;
-    position: sticky;
+    width: 100%;
+    position: fixed;
     bottom: 0;
     left: 0;
     z-index: 10;
     padding: 0;
     font-family: "Jersey 10", sans-serif;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  .business-footer.footer-visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .footer-spacer {
+    height: 88px; /* Adjust to match actual footer height */
+    width: 100%;
   }
 
   .footer-bottom-content {
@@ -198,6 +212,7 @@ export default {
   .footer-logo img {
     width: 80px; /* Adjust size as needed */
     height: auto; /* Maintain aspect ratio */
+    border: 1.4px solid var(--paragraph-color);
   }
 
   @media (max-width: 992px) {
