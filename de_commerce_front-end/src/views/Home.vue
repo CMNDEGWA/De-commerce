@@ -317,6 +317,7 @@ export default {
   margin: 8rem 0;
   height: 42vh;
   font-family: "Montserrat", sans-serif;
+  transition: all 0.7s ease;
 }
 
 .about-story h2, .about-values h2 {
@@ -332,6 +333,12 @@ export default {
 
 .about-story p {
   margin-top: 4.9rem;
+}
+
+.about-story:hover, .about-values:hover {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  box-shadow: 4px 0 var(--extra-color);
 }
 
 .about-values {
