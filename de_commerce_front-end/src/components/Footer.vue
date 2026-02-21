@@ -13,14 +13,18 @@
   <footer class="business-footer" v-show="isFooterVisible">
     <div class="footer-bottom-content">
       <ul class="footer-links-row">
-        <li><a href="#">Terms of Use</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Cookie Policy</a></li>
-        <li><a href="#">Contact</a></li>
+        <div class="footer-links-left">
+          <li><a href="#">Terms of Use</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </div>
+        <span class="footer-logo">
+          <img src="../assets/JMerchant-Logo.jpg" alt="JMerchant-Logo">
+        </span>
+        <div class="footer-links-right">
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Contact</a></li>
+        </div>
       </ul>
-      <div class="footer-logo-wrapper">
-        <span class="footer-logo">J</span>
-      </div>
     </div>
   </footer>
 </template>
@@ -147,52 +151,53 @@ export default {
 
   .footer-links-row {
     display: flex;
-    justify-content: center;
-    gap: 21rem;
+    justify-content: space-between; /* Distribute left, center, and right sections */
+    align-items: center;
     list-style: none;
     margin: 2.8rem 0;
     padding: 0;
   }
 
-  .footer-links-row li a {
-    color: var(--text-color);
-    font-family: "Jersey 10", sans-serif;
-    font-size: 1.5rem;
-    text-decoration: none;
-    opacity: 0.9;
-    transition: color 0.7s, opacity 0.7s;
+  .footer-links-left,
+  .footer-links-right {
     padding: 1rem 3rem;
-  }
-
-  .footer-links-row li a:hover {
-    color: var(--extra-color);
-    background-color: var(--paragraph-color);
-    opacity: 1;
-  }
-
-  .footer-logo-wrapper {
+    font-size: 1.4rem;
+    margin: 0 2rem;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2.1rem;
+    gap: 2rem; /* Adjust spacing between links */
+  }
+
+  .footer-links-right a {
+    margin: 0 5rem;
+    transition: background-color 0.7s, color 0.7s;
+    padding: 0.4rem 1.4rem;
+  }
+
+  .footer-links-left a {
+    margin: 0 5rem;
+    transition: background-color 0.7s, color 0.7s;
+    padding: 0.4rem 1.4rem;
+  }
+
+  .footer-links-right:hover a {
+    background-color: var(--extra-color);
+    color: var(--text-color);
+  }
+
+  .footer-links-left:hover a {
+    background-color: var(--extra-color);
+    color: var(--text-color);
   }
 
   .footer-logo {
-    display: inline-block;
-    font-family: "Jersey 10", sans-serif;
-    font-size: 4.2rem;
-    color: var(--background-color);
-    background: var(--extra-color);
-    width: 70px;
-    height: 70px;
-    line-height: 70px;
-    text-align: center;
-    transition: all 0.7s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .footer-logo:hover {
-    background-color: var(--background-color);
-    color: var(--extra-color);
+  .footer-logo img {
+    width: 80px; /* Adjust size as needed */
+    height: auto; /* Maintain aspect ratio */
   }
 
   @media (max-width: 992px) {
