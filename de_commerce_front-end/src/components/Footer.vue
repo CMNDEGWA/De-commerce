@@ -1,194 +1,219 @@
 <template>
-  <footer class="business-footer">
-    <div class="container footer-content">
-      <div class="footer-section brand-info">
-        <router-link to="/" class="brandName">Jirani Merchants</router-link>
-        <p class="brand-description">
-          Empowering local commerce with a curated selection of premium products and seamless shopping experiences.
-        </p>
-        <div class="social-links">
-          <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-        </div>
+  <div class="newsletter-section">
+    <div class="newsletter-content">
+      <p class="newsletter-title">Want to stay in touch? Sign up to receive news and updates from the Jirani Merchants team.</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Email Address" class="newsletter-input-field" />
+        <button class="newsletter-signup-btn">SIGN UP</button>
       </div>
-
-      <div class="footer-section">
-        <h4 class="footer-heading">Company</h4>
-        <ul class="footer-links">
-          <li><router-link to="/">Home</router-link></li>
-          <li><router-link to="/products">Products</router-link></li>
-          <li><router-link to="/about">About Us</router-link></li>
-          <li><router-link to="/contact">Contact</router-link></li>
-        </ul>
-      </div>
-
-      <div class="footer-section">
-        <h4 class="footer-heading">Support</h4>
-        <ul class="footer-links">
-          <li><router-link to="/faq">FAQs</router-link></li>
-          <li><router-link to="/shipping">Shipping Info</router-link></li>
-          <li><router-link to="/returns">Returns</router-link></li>
-          <li><router-link to="/privacy">Privacy Policy</router-link></li>
-        </ul>
-      </div>
-
-      <div class="footer-section">
-        <h4 class="footer-heading">Newsletter</h4>
-        <p class="newsletter-text">Stay updated on our latest arrivals.</p>
-        <div class="newsletter-input">
-          <input type="email" placeholder="Email address" />
-          <button type="button"><i class="fas fa-paper-plane"></i></button>
-        </div>
-      </div>
+      <p class="newsletter-privacy">We respect your privacy.</p>
     </div>
-
-    <div class="footer-bottom">
-      <div class="container d-flex justify-content-between align-items-center">
-        <p>&copy; 2026 Jirani Merchants. All Rights Reserved.</p>
-        <p>Made with <i class="fas fa-heart text-danger"></i> for the community.</p>
+  </div>
+  <footer class="business-footer" v-show="isFooterVisible">
+    <div class="footer-bottom-content">
+      <ul class="footer-links-row">
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <div class="footer-logo-wrapper">
+        <span class="footer-logo">M</span>
       </div>
     </div>
   </footer>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      isFooterVisible: false,
+    };
+  },
+  mounted() {
+    window.addEventListener('scroll', this.checkScrollPosition);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.checkScrollPosition);
+  },
+  methods: {
+    checkScrollPosition() {
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      this.isFooterVisible = scrollPosition >= documentHeight;
+    },
+  },
+};
+</script>
+
 <style scoped>
 .business-footer {
-  /* Using new palette (depth-focused) */
-  --text-color: #191919;
-  --background-color: #fcfffc;
-  --navbar-bg: rgba(252, 255, 252, 0.9); /* Slightly more opaque for readability */
-  
-  background-color: var(--navbar-bg);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  
-  /* Mirroring Navbar: Top Border and Upward Shadow */
-  border-top: 3px solid var(--text-color);
-  box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.5);
-  
-  padding-top: 60px;
-  margin-top: 50px;
-  color: #f0f0f0;
-  font-family: "Newsreader", serif;
-}
-
-.footer-content {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
-  gap: 40px;
-  margin-bottom: 40px;
-}
-
-/* Brand Section Styling */
-.brandName {
-  display: block;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 800;
-  font-size: 1.8rem;
-  color: var(--text-color);
-  text-decoration: none;
-  letter-spacing: 4px;
-  margin-bottom: 15px;
-}
-
-.brand-description {
-  opacity: 0.8;
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-.footer-heading {
-  font-family: "Montserrat", sans-serif;
-  color: var(--text-color);
-  font-weight: 700;
-  margin-bottom: 25px;
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Links Styling */
-.footer-links {
-  list-style: none;
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.18);
   padding: 0;
+  font-family: "Montserrat", sans-serif;
 }
 
-.footer-links li {
-  margin-bottom: 12px;
-}
+/* Use page palette and fonts */
+  :root {
+    --footer-bg: #191919;
+    --footer-text: #fcfffc;
+    --footer-accent: #f15025;
+    --footer-link-hover: #f15025;
+  }
 
-.footer-links a {
-  color: #f0f0f0;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  opacity: 0.75;
-}
+  .newsletter-section {
+    background: #636973;
+    color: var(--footer-text);
+    padding: 60px 0 30px 0;
+    text-align: center;
+    margin: 11.5rem 0;
+    font-family: "Montserrat", sans-serif;
+  }
 
-.footer-links a:hover {
-  color: var(--text-color);
-  opacity: 1;
-  padding-left: 8px; /* Subtle slide effect */
-}
+  .newsletter-title {
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+  }
+  .newsletter-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .newsletter-input-field {
+    padding: 18px 32px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 0;
+    background: var(--footer-text);
+    color: #636973;
+    font-family: "Montserrat", sans-serif;
+    width: 320px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .newsletter-signup-btn {
+    padding: 18px 32px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 0;
+    background: var(--footer-accent);
+    color: var(--footer-text);
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: background 0.3s, color 0.3s;
+  }
+  .newsletter-signup-btn:hover {
+    background: var(--footer-bg);
+    color: var(--footer-accent);
+  }
+  .newsletter-privacy {
+    font-size: 1rem;
+    opacity: 0.7;
+    margin-top: 18px;
+    font-family: "Montserrat", sans-serif;
+  }
 
-/* Socials & Input */
-.social-links {
-  display: flex;
-  gap: 15px;
-  margin-top: 20px;
-}
+  /* Black footer bar stuck at bottom */
+  .business-footer {
+    background: var(--footer-bg);
+    color: var(--footer-text);
+    width: 100vw;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.18);
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+  }
+  .footer-bottom-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 0 18px 0;
+  }
+  .footer-links-row {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    list-style: none;
+    margin: 0 0 18px 0;
+    padding: 0;
+  }
+  .footer-links-row li a {
+    color: var(--footer-text);
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.1rem;
+    text-decoration: underline;
+    opacity: 0.9;
+    transition: color 0.3s, opacity 0.3s;
+  }
+  .footer-links-row li a:hover {
+    color: var(--footer-link-hover);
+    opacity: 1;
+  }
+  .footer-logo-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .footer-logo {
+    display: inline-block;
+    font-family: "Montserrat", sans-serif;
+    font-size: 3.2rem;
+    color: var(--footer-accent);
+    background: var(--footer-text);
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    line-height: 64px;
+    text-align: center;
+    font-weight: 900;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
 
-.social-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(146, 20, 12, 0.06);
-  color: var(--text-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
+  @media (max-width: 992px) {
+    .footer-links-row {
+      gap: 24px;
+    }
+    .newsletter-input-field, .newsletter-signup-btn {
+      padding: 12px 18px;
+      font-size: 1rem;
+      width: 180px;
+    }
+  }
 
-.social-icon:hover {
-  background: var(--text-color);
-  color: var(--background-color);
-  transform: translateY(-5px);
-}
-
-.newsletter-input {
-  display: flex;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 5px;
-  border-radius: 12px;
-  border: 1px solid rgba(146, 20, 12, 0.16);
-}
-
-.newsletter-input input {
-  background: transparent;
-  border: none;
-  color: white;
-  padding: 10px;
-  flex: 1;
-  outline: none;
-}
-
-.newsletter-input button {
-  background: var(--text-color);
-  border: none;
-  color: var(--background-color);
-  padding: 10px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.newsletter-input button:hover {
-  background: #fff;
-}
-
+  @media (max-width: 576px) {
+    .footer-links-row {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-logo {
+      font-size: 2.2rem;
+      width: 44px;
+      height: 44px;
+      line-height: 44px;
+    }
+    .newsletter-section {
+      padding: 32px 0 18px 0;
+    }
+  }
 /* Bottom Bar */
 .footer-bottom {
   border-top: 1px solid rgba(146, 20, 12, 0.06);
