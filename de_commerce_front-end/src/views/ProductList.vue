@@ -1,11 +1,32 @@
 <template>
   <div class="container">
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ul class="breadcrumb-list">
+        <li><router-link to="/">Home</router-link></li>
+        <li><span class="separator">/</span></li>
+        <li class="active">
+          {{ selectedCategoryName || 'All Products' }}
+        </li>
+      </ul>
+    </nav>
+
     <div class="product-list">
-      <h2 class="list-title">Jirani Merchant Products</h2>
+      <header class="list-header">
+        <h1 class="list-title">
+          Explore {{ selectedCategoryName || 'Jirani Merchant' }} Products
+        </h1>
+        <p class="seo-description">
+          Browse our high-quality collection of {{ selectedCategoryName?.toLowerCase() || 'merchant' }} items with real-time stock availability.
+        </p>
+      </header>
       
       <div class="category-dropdown-filter">
-        <label class="filter-label">Filter by Category:</label>
-        <select v-model="selectedCategory" class="category-dropdown">
+        <label class="filter-label" for="category-select">Filter by Category:</label>
+        <select 
+          id="category-select"
+          v-model="selectedCategory" 
+          class="category-dropdown"
+        >
           <option :value="null">All Categories</option>
           <option v-for="cat in categories" :key="cat.id" :value="cat.id">
             {{ cat.name }}
@@ -14,7 +35,18 @@
       </div>
 
       <div class="products-columns">
-        <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" />
+        <ProductCard 
+          v-for="product in filteredProducts" 
+          :key="product.id" 
+          :product="product"
+          :show-quick-add="true"
+          :show-rating="true"
+          :show-availability="true"
+        />
+      </div>
+
+      <div v-if="filteredProducts.length === 0" class="no-results">
+        <p>No products found in this category.</p>
       </div>
     </div>
   </div>
@@ -29,6 +61,12 @@ const products = ref([]);
 const categories = ref([]);
 const selectedCategory = ref(null);
 
+// Helper for Breadcrumbs and SEO Header
+const selectedCategoryName = computed(() => {
+  const cat = categories.value.find(c => c.id === selectedCategory.value);
+  return cat ? cat.name : null;
+});
+
 const filteredProducts = computed(() => {
   if (!selectedCategory.value) return products.value;
   return products.value.filter(p => p.category && p.category.id === selectedCategory.value);
@@ -40,22 +78,13 @@ onMounted(async () => {
       fetchProducts(),
       fetchCategories()
     ]);
-    if (Array.isArray(prodRes.data)) {
-      products.value = prodRes.data;
-    } else if (Array.isArray(prodRes.data.results)) {
-      products.value = prodRes.data.results;
-    } else {
-      products.value = [];
-    }
-    if (Array.isArray(catRes.data)) {
-      categories.value = catRes.data;
-    } else if (Array.isArray(catRes.data.results)) {
-      categories.value = catRes.data.results;
-    } else {
-      categories.value = [];
-    }
+    
+    // Logic to handle different API response formats
+    products.value = Array.isArray(prodRes.data) ? prodRes.data : (prodRes.data.results || []);
+    categories.value = Array.isArray(catRes.data) ? catRes.data : (catRes.data.results || []);
+    
   } catch (error) {
-    console.error('Failed to fetch products or categories:', error);
+    console.error('Failed to fetch data:', error);
     products.value = [];
     categories.value = [];
   }
@@ -63,26 +92,74 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Consistency with ProductDetails and Login theme */
-.product-list {
+
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+/* Theme Variables */
+:root {
   --text-color: #191919;
   --extra-color: #f15025;
-  --paragraph-color: #191919;
+  --paragraph-color: #4a4a4a;
   --background-color: #fcfffc;
-  
-  padding: 2rem;
-  min-height: 100vh;
+}
+
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Breadcrumbs Styling */
+.breadcrumb-nav {
+  padding: 1.5rem 0 0 2rem;
+}
+
+.breadcrumb-list {
+  font-family: "Jersey 10", sans-serif;
+  list-style: none;
+  display: flex;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: var(--paragraph-color);
+}
+
+.breadcrumb-list a {
+  text-decoration: none;
+  color: var(--extra-color);
+  font-weight: 500;
+}
+
+.breadcrumb-list .active {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Header & SEO Styling */
+.list-header {
+  text-align: center;
+  margin-bottom: 2.8rem;
 }
 
 .list-title {
+  font-family: "Jersey 10", sans-serif;
   color: var(--text-color);
-  text-align: center;
-  font-size: 2.2rem;
+  font-size: 4.2rem;
   font-weight: 800;
-  margin-bottom: 2rem;
+  margin: 1.4rem 0;
   text-shadow: 0 0 15px rgba(241, 80, 37, 0.12);
 }
 
+.seo-description {
+  color: var(--paragraph-color);
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 1.4px;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Filter Styling */
 .category-dropdown-filter {
   display: flex;
   flex-direction: column;
@@ -93,50 +170,50 @@ onMounted(async () => {
 
 .filter-label {
   color: var(--extra-color);
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
 }
 
 .category-dropdown {
+  font-family: "Montserrat", sans-serif;
   font-size: 1rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
-  background-color: var(--background-color);
-  color: var(--paragraph-color);
-  border: 1.5px solid var(--extra-color);
-  font-weight: 600;
-  min-width: 240px;
+  padding: 0.8rem 1.5rem;
+  background-color: var(--extra-color);
+  color: var(--background-color);
+  min-width: 260px;
   cursor: pointer;
-  outline: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(241, 80, 37, 0.10);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
 }
 
 .category-dropdown:focus {
-  border-color: var(--text-color);
-  box-shadow: 0 0 10px rgba(241, 80, 37, 0.12);
+  outline: none;
 }
 
+/* Responsive Grid */
 .products-columns {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 4rem 3vw;
-  justify-items: center;
-  align-items: start;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 3rem 2rem;
+  margin-bottom: 5rem;
 }
 
-@media (max-width: 900px) {
-  .products-columns {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-  
+.no-results {
+  text-align: center;
+  padding: 5rem;
+  font-size: 1.2rem;
+  color: #888;
+}
+
+@media (max-width: 768px) {
   .list-title {
     font-size: 1.8rem;
+  }
+  
+  .products-columns {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
   }
 }
 </style>
