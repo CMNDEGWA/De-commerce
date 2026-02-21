@@ -34,29 +34,44 @@
       </div>
     </section>
 
-    <section class="featured-products">
-      <h1>Most Featured Products</h1>
-      <!-- Placeholder for featured products, can be replaced with actual product components -->
-      <div class="featured-box">
-        <h2>Featured Product 1</h2>
-        <img src="" alt="">
-        <p>Discover the best of our collection with this top-rated item.</p>
-            <router-link class="nav-link" to="/products">
-               <i class="fas fa-arrow-right me-2"></i>View Product</router-link>
-      </div>
-      <div class="featured-box">
-        <h2>Featured Product 2</h2>
-        <img src="" alt="">
-        <p>Experience excellence with this highly sought-after product.</p>
-            <router-link class="nav-link" to="/products">
-               <i class="fas fa-arrow-right me-2"></i>View Product</router-link>
-      </div>
-      <div class="featured-box">
-        <h2>Featured Product 3</h2>
-        <img src="" alt="">
-        <p>Indulge in luxury with this exclusive and popular choice.</p>
-            <router-link class="nav-link" to="/products">
-               <i class="fas fa-arrow-right me-2"></i>View Product</router-link>
+    <section class="about-section">
+      <h1 class="about-title">ABOUT US</h1>
+      <div class="about-content">
+        <div class="about-story">
+          <h2>Our Story</h2>
+          <p>
+            Founded with a vision to empower communities and connect cultures, Jirani, The Merchants, began as a small initiative to bridge local talent with a global audience. Our journey is rooted in the belief that every product and service carries a story, a heritage, and a purpose. Over the years, we have grown into a vibrant marketplace that celebrates diversity, creativity, and sustainable growth.
+          </p>
+        </div>
+        <div class="about-values">
+          <h2>Our Values & Commitments</h2>
+          <ul>
+            <li><strong>Integrity:</strong> We operate with honesty, transparency, and respect for all.</li>
+            <li><strong>Community:</strong> We foster a sense of belonging and uplift local entrepreneurs.</li>
+            <li><strong>Innovation:</strong> We embrace creativity and technology to deliver exceptional experiences.</li>
+            <li><strong>Sustainability:</strong> We are committed to eco-friendly practices and responsible sourcing.</li>
+            <li><strong>Inclusivity:</strong> We celebrate diversity and ensure equal opportunities for all.</li>
+          </ul>
+        </div>
+        <div class="about-features">
+          <div class="about-feature-box">
+            <h3>Mission</h3>
+            <p>To empower local merchants and artisans by providing a platform that connects them to a global marketplace, fostering economic growth and cultural exchange.</p>
+          </div>
+          <div class="about-feature-box">
+            <h3>Vision</h3>
+            <p>To be a leading force in sustainable commerce, where every transaction supports communities and preserves cultural heritage, aligned with international standards and environmental stewardship.</p>
+          </div>
+          <div class="about-feature-box">
+            <h3>Goals</h3>
+            <ul>
+              <li>Promote fair trade and ethical business practices worldwide.</li>
+              <li>Expand opportunities for local businesses to reach international markets.</li>
+              <li>Champion environmental responsibility in every aspect of our operations.</li>
+              <li>Continuously innovate to enhance user experience and accessibility.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -94,7 +109,7 @@ export default {
 
 .hero {
   /* Offset for the sticky navbar (12vh - 15vh) */
-  padding-bottom: 50px;
+  padding-bottom: 7rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -268,20 +283,139 @@ export default {
   color: var(--text-color);
 }
 
-.featured-products {
-  text-align: center;
-  margin-top: 14rem;
-}
 
-.featured-products h1 {
+/* About Us Section */
+.about-section {
   color: var(--paragraph-color);
-  margin-bottom: 3rem;
+  padding: 6rem 0 4rem 0;
+  margin-top: 8rem;
+  border-radius: 0;
 }
 
-.featured-products .featured-box {
-  border-bottom: 1px solid rgba(241, 80, 37, 0.10);
-  padding: 42px;
-  margin-bottom: 2rem;
+.about-title {
+  font-family: "Jersey 10", sans-serif;
+  font-size: 2.8rem;
+  color: var(--extra-color);
+  text-align: center;
+  margin-bottom: 2.5rem;
+  letter-spacing: 1.2px;
+}
+
+.about-content {
+  max-width: 80%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+.about-story, .about-values {
+  background: var(--paragraph-color);
+  color: var(--background-color);
+  border-radius: 0;
+  padding: 2.2rem 2.5rem;
+  font-family: "Montserrat", sans-serif;
+}
+
+.about-story h2, .about-values h2 {
+  font-family: "Jersey 10", sans-serif;
+  color: var(--extra-color);
+  border-left: 1.4px solid var(--extra-color);
+  padding-left: 1.2rem;
+  width: 30%;
+  font-size: 2rem;
+  margin-bottom: 1.2rem;
+  letter-spacing: 1px;
+}
+
+.about-values ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.about-values li {
+  margin-bottom: 0.7em;
+  font-size: 1.08rem;
+  font-family: "Montserrat", sans-serif;
+}
+
+.about-values li strong {
+  color: var(--extra-color);
+  padding: 0 0.7rem;
+}
+
+.about-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  justify-content: space-between;
+  margin-top: 2.5rem;
+}
+
+
+.about-feature-box {
+  flex: 1 1 260px;
+  color: var(--paragraph-color);
+  border: 1.2px solid var(--text-color);
+  border-radius: 0;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(241,80,37,0.06);
+  font-family: "Montserrat", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.about-feature-box:hover h3{
+  color: var(--text-color);
+  text-transform: uppercase;
+}
+
+.about-feature-box p {
+  font-size: 1.02rem;
+  line-height: 1.5;
+  letter-spacing: 0.7px;
+}
+
+.about-feature-box h3 {
+  font-family: "Jersey 10", sans-serif;
+  color: var(--extra-color);
+  font-size: 2rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.5px;
+  transition: all 0.7s ease;
+}
+
+.about-feature-box ul {
+  list-style: none;
+  margin: 0 0.7rem;
+  padding-left: 1.2em;
+}
+
+.about-feature-box li {
+  margin-bottom: 0.5em;
+  font-size: 1.01rem;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.7px;
+}
+
+@media (max-width: 992px) {
+  .about-content {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 0 1.2rem;
+  }
+  .about-features {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+  .about-feature-box {
+    max-width: 100%;
+    min-width: 0;
+    align-items: flex-start;
+  }
 }
 
 /* Mobile Responsiveness */
