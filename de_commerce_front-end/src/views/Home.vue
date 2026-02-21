@@ -1,79 +1,81 @@
 <template>
   <div class="home">
-    <header class="hero">
-      <div class="hero-main-content">
-        <div class="hero-image-wrapper">
-          <div class="hero-content">
-            <h1 class="hero-title">Karibu<br/> Kwa Jirani, The Merchants.</h1>
-            <p class="hero-lead"><em>Jirani:</em> It is a Swahili word meaining Neighbor.</p>
-          </div>
-          <img src="../assets/img/Merchants.jpg" alt="Shopping" class="hero-img" />
-            <div class="cta-wrapper">
-              <button class="get-started-btn">GET STARTED</button>
-              <div class="login-prompt">
-                <span>Already have an account?</span>
-                <router-link to="/login" class="login-link">Login</router-link>
+    <div class="main-content">
+      <header class="hero">
+        <div class="hero-main-content">
+          <div class="hero-image-wrapper">
+            <div class="hero-content">
+              <h1 class="hero-title">Karibu<br/> Kwa Jirani, The Merchants.</h1>
+              <p class="hero-lead"><em>Jirani:</em> It is a Swahili word meaining Neighbor.</p>
+            </div>
+            <img src="../assets/img/Merchants.jpg" alt="Shopping" class="hero-img" />
+              <div class="cta-wrapper">
+                <button class="get-started-btn">GET STARTED</button>
+                <div class="login-prompt">
+                  <span>Already have an account?</span>
+                  <router-link to="/login" class="login-link">Login</router-link>
+                </div>
               </div>
             </div>
-          </div>
-      </div>
-    </header>
-
-    <section class="elements">
-      <div class="element-box" @mouseover="highlight('Enhanced Experience')">
-        <h2>Enhanced Experience</h2>
-        <p>Shop effortlessly with our intuitive interface.</p>
-      </div>
-      <div class="element-box" @mouseover="highlight('Exclusive Offers')">
-        <h2>Exclusive Offers</h2>
-        <p>Unlock special discounts and promotions tailored to you.</p>
-      </div>
-      <div class="element-box" @mouseover="highlight('Real-Time Support')">
-        <h2>Real-Time Support</h2>
-        <p>Instant assistance when you need it most.</p>
-      </div>
-    </section>
-
-    <section class="about-section">
-      <h1 class="about-title">ABOUT US</h1>
-      <div class="about-content">
-        <div class="about-story">
-          <h2>Our Story</h2>
-          <p>
-            Founded with a vision to empower communities and connect cultures, Jirani, The Merchants, began as a small initiative to bridge local talent with a global audience. Our journey is rooted in the belief that every product and service carries a story, a heritage, and a purpose. Over the years, we have grown into a vibrant marketplace that celebrates diversity, creativity, and sustainable growth.
-          </p>
         </div>
-        <div class="about-values">
-          <h2>Our Values & Commitments</h2>
-          <ul>
-            <li><strong>Integrity:</strong> We operate with honesty, transparency, and respect for all.</li>
-            <li><strong>Community:</strong> We foster a sense of belonging and uplift local entrepreneurs.</li>
-            <li><strong>Innovation:</strong> We embrace creativity and technology to deliver exceptional experiences.</li>
-            <li><strong>Sustainability:</strong> We are committed to eco-friendly practices and responsible sourcing.</li>
-            <li><strong>Inclusivity:</strong> We celebrate diversity and ensure equal opportunities for all.</li>
-          </ul>
+      </header>
+
+      <section class="elements">
+        <div class="element-box" @mouseover="highlight('Enhanced Experience')">
+          <h2>Enhanced Experience</h2>
+          <p>Shop effortlessly with our intuitive interface.</p>
         </div>
-        <div class="about-features">
-          <div class="about-feature-box Mission">
-            <h3>Mission</h3>
-            <p>To empower local merchants and artisans by providing a platform that connects them to a global marketplace, fostering economic growth and cultural exchange.</p>
+        <div class="element-box" @mouseover="highlight('Exclusive Offers')">
+          <h2>Exclusive Offers</h2>
+          <p>Unlock special discounts and promotions tailored to you.</p>
+        </div>
+        <div class="element-box" @mouseover="highlight('Real-Time Support')">
+          <h2>Real-Time Support</h2>
+          <p>Instant assistance when you need it most.</p>
+        </div>
+      </section>
+
+      <section class="about-section">
+        <h1 class="about-title">ABOUT US</h1>
+        <div class="about-content">
+          <div class="about-story">
+            <h2>Our Story</h2>
+            <p>
+              Founded with a vision to empower communities and connect cultures, Jirani, The Merchants, began as a small initiative to bridge local talent with a global audience. Our journey is rooted in the belief that every product and service carries a story, a heritage, and a purpose. Over the years, we have grown into a vibrant marketplace that celebrates diversity, creativity, and sustainable growth.
+            </p>
           </div>
-          <div class="about-feature-box Vision">
-            <h3>Vision</h3>
-            <p>To be a leading force in sustainable commerce, where every transaction supports communities and preserves cultural heritage, aligned with international standards and environmental stewardship.</p>
-          </div>
-          <div class="about-feature-box Goals">
-            <h3>Goals</h3>
+          <div class="about-values">
+            <h2>Our Values & Commitments</h2>
             <ul>
-              <li>Promote fair trade and ethical business practices worldwide.</li>
-              <li>Expand opportunities for local businesses to reach international markets.</li>
-              <li>Champion environmental responsibility in every aspect of our operations.</li>
-              <li>Continuously innovate to enhance user experience and accessibility.</li>
+              <li><strong>Integrity:</strong> We operate with honesty, transparency, and respect for all.</li>
+              <li><strong>Community:</strong> We foster a sense of belonging and uplift local entrepreneurs.</li>
+              <li><strong>Innovation:</strong> We embrace creativity and technology to deliver exceptional experiences.</li>
+              <li><strong>Sustainability:</strong> We are committed to eco-friendly practices and responsible sourcing.</li>
+              <li><strong>Inclusivity:</strong> We celebrate diversity and ensure equal opportunities for all.</li>
             </ul>
           </div>
+          <div class="about-features">
+            <div class="about-feature-box Mission">
+              <h3>Mission</h3>
+              <p>To empower local merchants and artisans by providing a platform that connects them to a global marketplace, fostering economic growth and cultural exchange.</p>
+            </div>
+            <div class="about-feature-box Vision">
+              <h3>Vision</h3>
+              <p>To be a leading force in sustainable commerce, where every transaction supports communities and preserves cultural heritage, aligned with international standards and environmental stewardship.</p>
+            </div>
+            <div class="about-feature-box Goals">
+              <h3>Goals</h3>
+              <ul>
+                <li>Promote fair trade and ethical business practices worldwide.</li>
+                <li>Expand opportunities for local businesses to reach international markets.</li>
+                <li>Champion environmental responsibility in every aspect of our operations.</li>
+                <li>Continuously innovate to enhance user experience and accessibility.</li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -100,12 +102,18 @@ export default {
 }
 
 .home {
-  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   font-family: "Montserrat", sans-serif;
   color: var(--paragraph-color);
   padding: 0 5%;
 }
+
+.main-content {
+  flex: 1;
+}
+
 
 .hero {
   /* Offset for the sticky navbar (12vh - 15vh) */
@@ -237,6 +245,7 @@ export default {
   font-weight: 600;
   transition: color 0.7s ease, background-color 0.7s ease;
 }
+
 .login-link:hover {
   color: var(--text-color);
   background-color: var(--extra-color);
