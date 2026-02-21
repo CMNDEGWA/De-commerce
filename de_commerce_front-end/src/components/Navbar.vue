@@ -5,7 +5,7 @@
       <!-- Brand/Logo - Always Visible -->
       <div class="navbar-brand">
         <!-- router-link: Navigate to home without page reload -->
-        <router-link to="/" class="brandName">Jirani <em class="brandName-em">Merchants</em></router-link>
+        <router-link to="/" class="brandName">Jirani Merchants</router-link>
       </div>
 
       <!-- Navigation Links -->
@@ -173,7 +173,7 @@ onMounted(() => {
 
 <style scoped>
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
   --text-color: #191919;
@@ -202,17 +202,10 @@ onMounted(() => {
 .navbar-brand .brandName {
   color: var(--text-color);
   text-decoration: none;
-  font-size: 1.6rem;
-  font-family: "Montserrat", sans-serif;
+  font-size: 2.1rem;
+  font-family: "Jersey 10", sans-serif;
   font-weight: 600;
   letter-spacing: 3px;
-}
-
-.navbar-brand .brandName-em {
-  font-size: 1.8rem;
-  font-weight: bold;
-  font-family: "Cormorant SC", serif;
-  text-decoration: underline;
 }
 
 .navbar-nav .nav-item {
@@ -221,9 +214,10 @@ onMounted(() => {
 }
 
 .nav-link {
+  font-size: 1.4rem;
   color: var(--text-color) !important;
-  font-family: "Newsreader", sans-serif;
-  font-weight: 600;
+  font-family: "Jersey 10", sans-serif;
+  font-weight: 400;
   padding: 10px 18px !important;
   display: flex;
   align-items: center;
