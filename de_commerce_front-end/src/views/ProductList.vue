@@ -100,7 +100,7 @@ onMounted(async () => {
 :root {
   --text-color: #191919;
   --extra-color: #f15025;
-  --paragraph-color: #4a4a4a;
+  --paragraph-color: #191919;
   --background-color: #fcfffc;
 }
 
@@ -193,9 +193,10 @@ onMounted(async () => {
 
 /* Responsive Grid */
 .products-columns {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 3rem 2rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
   margin-bottom: 5rem;
 }
 
@@ -203,7 +204,7 @@ onMounted(async () => {
   text-align: center;
   padding: 5rem;
   font-size: 1.2rem;
-  color: #888;
+  color: var(--extra-color);
 }
 
 @media (max-width: 768px) {
