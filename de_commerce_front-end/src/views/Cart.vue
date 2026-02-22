@@ -8,8 +8,8 @@
         <li v-for="item in cart.items" :key="item.id" class="cart-item">
           <div class="item-main">
             <strong>{{ item.product.name }}</strong>
-            <span class="item-category">Category: {{ item.product.category?.name || 'Uncategorized' }}</span>
-            <span class="item-quantity">Quantity: {{ item.quantity }}</span>
+            <span class="item-category"> <em>Category: </em> {{ item.product.category?.name || 'Uncategorized' }}</span>
+            <span class="item-quantity"><em>Quantity:</em> {{ item.quantity }}</span>
             <span class="item-price">Price: {{ formatPrice(item.product.price) }}</span>
           </div>
           <div class="item-actions">
@@ -20,8 +20,8 @@
       <div class="cart-options">
         <div class="payment-method">
           <label>Payment Method:</label>
-          <select v-model="paymentMethod">
-            <option value="card">Card</option>
+          <select class="select" v-model="paymentMethod">
+            <option class="card" value="card">Card</option>
             <option value="mpesa">Mpesa</option>
             <option value="cash">Cash</option>
           </select>
@@ -103,96 +103,164 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
 :root  {
-  --text-color: #92140c;
-  --extra-color: #fff8f0;
-  --paragraph-color: #fff8f0;
-  --background-color: #1e1e24;
+  --text-color: #191919;
+  --extra-color: #f15025;
+  --paragraph-color: #191919;
+  --background-color: #fcfffc;
 }
 
 .cart {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 2rem auto;
-  background: var(--extra-color);
+  background: var(--background-color);
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-radius: 0;
+  border: 1.4px solid var(--paragraph-color);
 }
+
+.cart h2 {
+  font-family: "Jersey 10", sans-serif;
+  color: var(--text-color);
+  font-size: 2rem;
+  margin: 0 2rem;
+}
+
 .cart-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--extra-color);
+  margin: 1.4rem 0;
 }
+
 .item-main {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
-.item-category, .item-quantity, .item-price {
+
+.item-main strong {
+  color: var(--text-color);
+  font-size: 1.4rem;
+  font-family: "Montserrat", sans-serif;
+  padding: 0.7rem;
+}
+
+.item-category, .item-quantity {
+  font-family: "Montserrat", sans-serif;
   font-size: 0.95rem;
   color: var(--paragraph-color);
 }
+
+.item-main .item-category em {
+  padding: 0.3rem 0.7rem;
+}
+
+.item-main .item-quantity em {
+  padding: 0.3rem 0.7rem;
+}
+
+.item-main .item-price {
+  font-family: "Jersey 10", sans-serif;
+  font-size: 1.45rem;
+  color: var(--text-color);
+  margin: 1.4rem 1rem;
+  letter-spacing: 1px;
+}
+
 .item-actions {
   display: flex;
   align-items: center;
+  border-radius: 0;
 }
+
 .remove-btn {
   margin-left: 1rem;
-  background: #ff4d4d;
-  color: #fff;
+  background-color: var(--extra-color);
+  color: var(--text-color);
+  font-family: "Jersey 10", sans-serif;
   border: none;
-  border-radius: 6px;
-  padding: 0.3rem 1rem;
-  font-size: 0.95rem;
-  font-weight: 600;
+  border-radius: 0;
+  padding: 0.5rem 1.8rem;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.7s;
 }
+
 .remove-btn:hover {
-  background: #b30000;
+  background: var(--background-color);
+  border: 1.4px solid var(--text-color);
+  color: var(--extra-color);
 }
+
 .cart-options {
-  margin-top: 2rem;
   display: flex;
   gap: 2rem;
+  justify-content: space-between;
+  margin: 3.6rem 2.1rem;
 }
+
 .payment-method label, .promo-code label {
-  font-weight: 600;
+  font-family: "Jersey 10", sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
   color: var(--text-color);
-  margin-right: 0.5rem;
+  margin-right: 0.7rem;
 }
-.payment-method select {
+
+.payment-method .select {
+  font-family: "Jersey 10", sans-serif;
   padding: 0.4rem 1rem;
-  border-radius: 6px;
-  border: 1px solid var(--text-color);
-  font-size: 1rem;
+  border-radius: 0;
+  border: 1px solid var(--extra-color);
+  font-size: 1.1rem;
+  letter-spacing: 1.4px;
+  background-color: var(--background-color);
 }
+
 .promo-code input {
+  font-family: "Jersey 10", sans-serif;
   padding: 0.4rem 1rem;
-  border-radius: 6px;
+  border-radius: 0;
   border: 1px solid var(--text-color);
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin-right: 0.5rem;
+  background-color: var(--background-color);
+  transition: all 0.7s ease;
 }
+
 .promo-btn {
-  background: var(--text-color);
-  color: var(--background-color);
+  background: var(--extra-color);
+  color: var(--text-color);
+  letter-spacing: 1.4px;
+  font-family: "Jersey 10", sans-serif;
   border: none;
-  border-radius: 6px;
+  border-radius: 0;
   padding: 0.4rem 1rem;
-  font-size: 1rem;
-  font-weight: 600;
+  margin-left: 1.4rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.7s;
 }
+
 .promo-btn:hover {
-  background: #d4a608;
+  background: var(--background-color);
+  color: var(--extra-color);
+  border-left: 1.4px solid var(--text-color);
 }
+
 .promo-success {
-  color: #82ff86;
-  font-weight: 600;
+  color: var(--extra-color);
+  font-family: "Jersey 10", sans-serif;
+  letter-spacing: 1.4px;
   margin-left: 0.5rem;
 }
+
 </style>
