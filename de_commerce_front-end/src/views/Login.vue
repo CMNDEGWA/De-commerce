@@ -5,7 +5,7 @@
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
           <label>Username</label>
-          <input v-model="username" placeholder="Enter username" required />
+          <input v-model="username" placeholder="J-M/C-2020" required />
         </div>
         <div class="form-group">
           <label>Password</label>
@@ -17,8 +17,8 @@
         <div v-if="error" class="error-message">{{ error }}</div>
       </form>
       <div class="login-links">
-        <router-link to="/register" class="login-link">Don't have an account? Register</router-link>
-        <router-link to="/reset-password" class="login-link">Forgot password?</router-link>
+        <router-link to="/register" class="login-link">Don't have an account? <strong>Register</strong></router-link>
+        <router-link to="/reset-password" class="login-link-fp">Forgot password?</router-link>
       </div>
     </div>
   </div>
@@ -75,30 +75,18 @@ async function handleLogin() {
 </script>
 
 <style scoped>
-.login-links {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  align-items: center;
+
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+:root {
+  --text-color: #191919;
+  --extra-color: #f15025;
+  --paragraph-color: #191919;
+  --background-color: #fcfffc;
+  
 }
-.login-link {
-  color: var(--extra-color);
-  text-decoration: underline;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: color 0.2s;
-}
-.login-link:hover {
-  color: var(--text-color);
-}
+
 /* Matching the Color Palette from ProductDetails */
 .login-container {
-  --text-color: #92140c;
-  --extra-color: #fff8f0;
-  --paragraph-color: #fff8f0;
-  --background-color: #1e1e24;
-  
   display: flex;
   justify-content: center;
   align-items: center;
@@ -106,22 +94,23 @@ async function handleLogin() {
 }
 
 .login-card {
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
   background: var(--background-color);
   color: var(--paragraph-color);
   padding: 2.5rem;
-  border-radius: 18px;
+  border-radius: 0;
   /* Matching the ProductDetails glowing shadow */
   box-shadow: 0 0 40px 10px rgba(82, 255, 134, 0.2); 
-  border: 1px solid rgba(82, 255, 134, 0.1);
+  border: 1px solid var(--text-color);
 }
 
 .login-title {
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-family: "Jersey 10", sans-serif;
+  letter-spacing: 1.4px;
+  font-size: 2.8rem;
   color: var(--text-color);
-  margin-bottom: 2rem;
+  margin-bottom: 2.8rem;
   text-align: center;
 }
 
@@ -133,43 +122,56 @@ async function handleLogin() {
 }
 
 label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--extra-color);
+  font-size: 1rem;
+  font-family: "Jersey 10", sans-serif;
+  letter-spacing: 1.4px;
+  color: var(--text-color);
+  padding: 0rem 1.4rem;
 }
 
 input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--extra-color);
-  border-radius: 8px;
+  background: var(--background-color);
+  border: 1px solid var(--paragraph-color);
+  border-radius: 0;
+  border-bottom: none;
   padding: 0.8rem;
-  color: #fff;
+  color: var(--text-color);
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.7s ease;
 }
 
 input:focus {
   border-color: var(--text-color);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--background-color);
+}
+
+input::placeholder {
+  font-family: "Jersey 10", sans-serif;
+  letter-spacing: 1.4px;
+  font-size: 1rem;
 }
 
 .login-btn {
   width: 100%;
-  background: var(--text-color);
-  color: var(--background-color); /* Dark text on gold button for high contrast */
+  font-family: "Jersey 10", sans-serif;
+  letter-spacing: 1.4px;
+  background: var(--extra-color);
+  color: var(--text-color); /* Dark text on gold button for high contrast */
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   padding: 0.8rem;
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.5rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 1rem;
+  transition: all 0.7s ease;
+  margin-top: 3rem;
 }
 
 .login-btn:hover:not(:disabled) {
-  background: #d4a608;
+  background: var(--background-color);
+  color: var(--extra-color);
+  border-bottom: 2px solid var(--extra-color);
   transform: translateY(-2px);
+  margin-top: 1.8rem;
 }
 
 .login-btn:disabled {
@@ -178,12 +180,60 @@ input:focus {
 }
 
 .error-message {
-  color: #ff4d4d;
+  color: var(--extra-color);
   margin-top: 1.5rem;
   text-align: center;
   font-size: 0.9rem;
-  background: rgba(255, 77, 77, 0.1);
+  background: var(--text-color);
   padding: 0.5rem;
-  border-radius: 4px;
+  border-radius: 0;
 }
+
+.login-links {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  align-items: center;
+  font-family: "Montserrat", sans-serif;
+}
+
+.login-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.7s ease;
+  padding: 0.4rem 0.8rem;
+  border-bottom: 1.4px solid var(--extra-color);
+}
+
+.login-link strong {
+  margin-left: 0.8rem;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.login-links .login-link-fp {
+  border-bottom: 1.4px solid var(--extra-color);
+  padding: 0.4rem 0.8rem;
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.7s ease;
+}
+
+.login-link:hover {
+  border: none;
+  background-color: var(--paragraph-color);
+  color: var(--background-color);
+}
+
+.login-link-fp:hover {
+  border: none;
+  background-color: var(--paragraph-color);
+  color: var(--background-color);
+}
+
 </style>
