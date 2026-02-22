@@ -10,7 +10,7 @@
             </div>
             <img src="../assets/img/Merchants.jpg" alt="Shopping" class="hero-img" />
               <div class="cta-wrapper">
-                <button class="get-started-btn">GET STARTED</button>
+                <button class="get-started-btn" @click="fetchProducts" >GET STARTED</button>
                 <div class="login-prompt">
                   <span>Already have an account?</span>
                   <router-link to="/login" class="login-link">Login</router-link>
@@ -80,6 +80,8 @@
 </template>
 
 <script>
+import { fetchProducts } from '../services/products';
+
 export default {
   name: "Home",
   methods: {
@@ -98,7 +100,6 @@ export default {
   --extra-color: #f15025;
   --paragraph-color: #191919;
   --background-color: #fcfffc;
-  
 }
 
 .home {
@@ -202,6 +203,12 @@ export default {
   right: 0;
   border: 1.4px solid var(--text-color);
 }
+
+.get-started-btn:hover {
+  background-color: var(--paragraph-color);
+  color: var(--background-color);
+}
+
 
 /* --- The descriptive text that should appear under the image --- */
 .hero-span {
