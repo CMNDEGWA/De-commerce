@@ -53,93 +53,121 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.root{ }
-:root  {
+
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+:root {
   --text-color: #191919;
   --extra-color: #f15025;
   --paragraph-color: #191919;
   --background-color: #fcfffc;
 }
+
 .profile-container {
-  max-width: 700px;
+  max-width: 800px;
   margin: 4rem auto 2rem auto;
   background: var(--background-color);
   color: var(--paragraph-color);
   padding: 2.5rem 2.5rem 2rem 2.5rem;
-  border-radius: 18px;
-  box-shadow: 0 0 40px 10px rgba(241, 80, 37, 0.08);
+  border-radius: 0;
+  box-shadow: 0 0 40px 10px rgba(82, 255, 134, 0.2); 
   position: relative;
 }
+
 .profile-card {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .profile-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
 }
+
 .profile-pic {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
+  width: 210px;
+  height: 210px;
+  border-radius: 0%;
   object-fit: cover;
-  border: 3px solid var(--extra-color);
+  border: 3px solid var(--text-color);
   margin-bottom: 1rem;
 }
+
 .profile-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 2.7rem;
+  letter-spacing: 1.4px;
+  font-family: "Jersey 10", sans-serif;
   color: var(--text-color);
 }
+
 .profile-email {
-  font-size: 1rem;
+  font-family: "Jersey 10", sans-serif;
+  font-size: 1.35rem;
   color: var(--extra-color);
 }
+
 .profile-info {
   width: 100%;
   margin: 2rem 0;
+  padding: 2rem 0;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
+  border-bottom: 1.4px solid var(--extra-color);
 }
+
 .profile-row {
+  font-family: "Montserrat", sans-serif;
   font-size: 1.08rem;
   color: var(--paragraph-color);
 }
+
+.profile-row strong {
+  padding: 1rem;
+}
+
 .profile-orders {
   width: 100%;
-  margin-top: 2rem;
 }
+
 .profile-orders h3 {
+  font-family: "Jersey 10", sans-serif;
+  letter-spacing: 1.4px;
   color: var(--text-color);
-  margin-bottom: 1rem;
+  margin-bottom: 2.7rem;
 }
+
 .profile-orders ul {
   list-style: none;
   padding: 0;
 }
+
 .profile-orders li {
-  background: var(--extra-color);
-  color: #fff;
-  margin-bottom: 1.2rem;
+  background: var(--paragraph-color);
+  font-family: "Montserrat", sans-serif;
+  color: var(--background-color);
+  margin: 4rem 0;
   padding: 1.2rem 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  font-size: 1.08rem;
+  border-radius: 0;
+  font-size: 1.1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
+
 .profile-orders strong {
-  color: var(--text-color);
+  color: var(--extra-color);
   font-size: 1.1rem;
 }
+
 .order-status {
-  font-weight: 700;
+  font-family: "Jersey 10", sans-serif;
+  letter-spacing: 1.4px;
+  font-size: 1.1rem;
   text-transform: capitalize;
-  color: var(--text-color);
+  color: var(--extra-color);
 }
+
 </style>
