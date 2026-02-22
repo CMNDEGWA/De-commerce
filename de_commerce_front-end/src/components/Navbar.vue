@@ -46,7 +46,7 @@
         <!-- v-if="!isAuthenticated": Show for logged-out users -->
         <li class="nav-item" v-if="!isAuthenticated">
           <router-link class="nav-link" to="/login" active-class="active-page">
-            <i class="fas fa-user-plus me-2"></i> Login
+            Login
           </router-link>
         </li>
 
@@ -57,7 +57,7 @@
           <!-- Links to /profile route with user information and order history -->
           <li class="nav-item">
             <router-link class="nav-link" to="/profile" active-class="active-page">
-              <i class="fas fa-user me-2"></i> Profile
+              Profile
             </router-link>
           </li>
 
@@ -66,7 +66,7 @@
           <!-- .prevent: Prevents default link behavior (navigation) -->
           <li class="nav-item">
             <a class="nav-link" href="#" @click.prevent="logout">
-              <i class="fas fa-sign-out-alt me-2"></i> Logout
+              Logout
             </a>
           </li>
         </template>
