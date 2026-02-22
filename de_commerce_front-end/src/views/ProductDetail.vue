@@ -1,4 +1,3 @@
-
 <template>
   <div class="product-detail" v-if="product">
     <div class="detail-header">
@@ -16,15 +15,32 @@
           </div>
         </div>
         <p class="product-description">{{ product.description }}</p>
+
+        <!-- Accordions Section -->
+        <div class="accordions">
+          <div class="accordion" v-for="(accordion, index) in accordions" :key="index">
+            <button class="accordion-header" @click="toggleAccordion(index)">
+              {{ accordion.title }}
+              <span>{{ accordion.open ? '-' : '^' }}</span>
+            </button>
+            <div class="accordion-body" v-if="accordion.open">
+              <p>{{ accordion.content }}</p>
+            </div>
+          </div>
+        </div>
+
         <div class="add-to-cart-btn-wrapper">
           <button class="add-to-cart-btn" @click="toggleCart">
-            {{ inCart ? 'Remove from Cart' : 'Add to Cart' }}
+            {{ inCart ? 'Delete' : 'Add' }}
           </button>
-          <router-link to="/cart" class="go-to-cart-link">Go to Cart &rarr;</router-link>
+          <router-link to="/cart" class="go-to-cart-link">View Cart &rarr;</router-link>
         </div>
-          <div class="detail-info-right">
-            <span class="product-price">{{ formatPrice(product.price) }}</span>
-          </div>
+        <div class="detail-info-right">
+          
+          <!-- Add an a smooth animation to make the product-price appear to be blinking -->
+
+          <span class="product-price">{{ formatPrice(product.price) }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -69,6 +85,17 @@ function toggleCart() {
   }
 }
 
+// Accordion state
+const accordions = ref([
+  { title: 'More Description', content: 'This is additional information about the product.', open: false },
+  { title: 'Specifications', content: 'These are the product specifications.', open: false },
+  { title: 'In Stock', content: 'Here are some customer reviews.', open: false },
+]);
+
+function toggleAccordion(index) {
+  accordions.value[index].open = !accordions.value[index].open;
+}
+
 onMounted(async () => {
   try {
     const response = await fetchProduct(route.params.id);
@@ -82,27 +109,23 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.add-to-cart-btn-wrapper {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: flex-start;
-}
 
-:root  {
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+:root {
   --text-color: #191919;
   --extra-color: #f15025;
   --paragraph-color: #191919;
   --background-color: #fcfffc;
+  
 }
 
 .product-detail {
-  max-width: 700px;
+  max-width: 1000px;
   margin: 4rem auto 2rem auto;
   background: var(--background-color);
   color: var(--paragraph-color) ;
   padding: 2.5rem 2.5rem 2rem 2.5rem;
-  border-radius: 18px;
-  box-shadow: 0 0 40px 10px rgba(241, 80, 37, 0.08);
+  border-radius: 0;
   position: relative;
 }
 
@@ -114,36 +137,54 @@ onMounted(async () => {
 }
 
 .back-btn {
+  font-family: "Jersey 10", sans-serif;
   background: none;
   border: none;
   color: var(--extra-color);
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1.4rem;
   cursor: pointer;
   padding: 0.5rem 1.2rem;
-  border-radius: 8px;
-  transition: background 0.2s;
+  border-radius: 0;
+  transition: background 0.7s;
 }
 
 .back-btn:hover {
-  color: var(--text-color);
+  color: var(--background-color);
+  background: var(--extra-color);
 }
 
 .add-to-cart-btn {
   background: var(--text-color);
-  color: #fff;
+  color: var(--background-color);
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   padding: 0.7rem 2.2rem;
+  margin: 0 2rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: background 0.7s;
 }
 
 .add-to-cart-btn:hover {
-  background: #146c43;
+  background: var(--extra-color);
+}
+
+.add-to-cart-btn-wrapper {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.go-to-cart-link {
+  padding: 0.5rem 1rem;
+  border: 1.4px solid var(--extra-color);
+  transition: all 0.7s ease;
+}
+
+.go-to-cart-link:hover {
+  background-color: var(--paragraph-color);
+  color: var(--background-color);
 }
 
 .detail-main {
@@ -166,14 +207,15 @@ onMounted(async () => {
 
 .product-image {
   width: 100%;
-  max-width: 220px;
-  height: 220px;
+  max-width: 320px;
+  height: 320px;
   object-fit: contain;
   border-radius: 12px;
   background: var(--background-color);
 }
 
 .detail-info {
+  font-family: "Montserrat", sans-serif;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -186,7 +228,7 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 2.8rem;
 }
 
 .detail-info-left {
@@ -197,30 +239,38 @@ onMounted(async () => {
 }
 
 .product-title {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 800;
   color: var(--text-color);
   margin: 0;
   line-height: 1.2;
 }
 
 .product-category {
-  font-size: 1rem;
+  font-family: "Jersey 10", sans-serif;
+  font-size: 1.5rem;
   color: var(--paragraph-color);
-  font-weight: 500;
-  background: var(--background-color);
-  border-radius: 6px;
+  background: var(--extra-color);
+  border-radius: 0;
   padding: 0.2rem 0.8rem;
-  margin-top: 0.2rem;
+  margin-top: 1.2rem;
   display: inline-block;
   transition: background 0.7s ease, color 0.7s ease;
-  border-bottom: 1.4px solid var(--text-color);
 }
 
 .product-category:hover {
   background: var(--text-color);
   color: var(--background-color);
 }
+
+.product-description {
+  font-size: 1.08rem;
+  color: var(--paragraph-color);
+  margin-top: 0.5rem;
+  line-height: 1.6;
+  letter-spacing:1px;
+}
+
 
 .detail-info-right {
   display: flex;
@@ -229,19 +279,44 @@ onMounted(async () => {
   gap: 0.5rem;
   min-width: 90px;
 }
+
 .product-price {
-  font-size: 1.2rem;
+  font-size: 1.7rem;
+  font-family: "Jersey 10", sans-serif;
+  border: 1.4px solid var(--extra-color);
+  padding: 0.7rem 1.4rem;
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 0.5rem;
 }
 
-.product-description {
-  font-size: 1.08rem;
-  color: var(--paragraph-color);
-  margin-top: 0.5rem;
-  line-height: 1.6;
+/* Accordions Section */
+
+.accordions {
+  display: inline-block;
+  justify-content: flex-start;
+  align-items: center;
 }
+
+.accordions .accordion {
+  padding: 2.1rem;
+}
+
+.accordions .accordion .accordion-header {
+  font-family: "Jersey 10", sans-serif;
+  border-left: 1.4px solid var(--extra-color);
+  background-color: var(--background-color);
+  border-radius: 0;
+  font-size: 1.2rem;
+  transition: all 0.7s ease;
+}
+
+.accordions .accordion .accordion-body {
+  font-family: "Montserrat", sans-serif;
+  border-bottom: 1.4px solid var(--extra-color);
+  border-left: 1.4px solid var(--extra-color);
+}
+
 
 @media (max-width: 900px) {
   .product-detail {
