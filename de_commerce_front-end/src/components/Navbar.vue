@@ -10,8 +10,8 @@
 
       <!-- Navigation Links -->
       <ul class="navbar-nav flex-row align-items-center">
-        <!-- Home Link - Always Visible -->
-        <li class="nav-item">
+        <!-- Home Link - Visible only for unauthenticated users -->
+        <li class="nav-item" v-if="!isAuthenticated">
           <router-link class="nav-link" to="/" exact-active-class="active-page">
             Home
           </router-link>
@@ -136,35 +136,7 @@ async function logout() {
  * 2. Set up cross-tab authentication sync
  */
 onMounted(() => {
-  /**
-   * Load Font Awesome icons dynamically
-   * Checks if Font Awesome stylesheet already in document
-   * If not, creates <link> element and appends to <head>
-   * Allows icons (fas fa-home, fas fa-shopping-cart, etc) to render
-   */
-  if (!document.querySelector('link[href*="font-awesome"]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';
-    document.head.appendChild(link);
-  }
-
-  /**
-   * Cross-Tab Authentication Sync
-   * 
-   * Scenario: User has two browser tabs open, logs in on Tab A
-   * - Tab A: localStorage 'isAuthenticated' set to 'true'
-   * - Tab B: Needs to detect change and update UI
-   * 
-   * Solution: Listen for 'storage' event
-   * - Fires when localStorage changes in another tab
-   * - Calls auth.sync() to refresh state from localStorage
-   * - Navbar automatically updates to show logged-in state
-   * 
-   * Implementation:
-   * window.addEventListener('storage', callback)
-   * Callback updates Pinia store from localStorage
-   */
+  auth.sync(); // Ensure authentication state is synchronized on component mount
   window.addEventListener('storage', () => {
     auth.sync();
   });
