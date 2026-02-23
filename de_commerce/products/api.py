@@ -19,6 +19,9 @@ Permission system:
 from rest_framework import viewsets, permissions
 from .models import Category, Product, Cart, Order
 from .serializers import CategorySerializer, ProductSerializer, CartSerializer, OrderSerializer
+from django.core.mail import send_mail
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 # ============================================================================
 # PUBLIC VIEWSETS (NO LOGIN REQUIRED - AllowAny)
@@ -206,3 +209,40 @@ class OrderViewSet(viewsets.ModelViewSet):
 		This protects sensitive order information from unauthorized access.
 		"""
 		return Order.objects.filter(user=self.request.user)
+
+@api_view(['POST'])
+def password_reset(request):
+    email = request.data.get('email')
+    if not email:
+        return Response({'error': 'Email is required'}, status=400)
+
+    # Simulate sending a password reset email
+    send_mail(
+        'Password Reset Request',
+        'Click the link below to reset your password.',
+        'noreply@de-commerce.com',
+        [email],
+        fail_silently=False,
+    )
+
+    return Response({'message': 'Password reset link sent'})
+
+@api_view(['POST'])
+def contact_form(request):
+    name = request.data.get('name')
+    email = request.data.get('email')
+    message = request.data.get('message')
+
+    if not all([name, email, message]):
+        return Response({'error': 'All fields are required'}, status=400)
+
+    # Simulate saving the message or sending an email
+    send_mail(
+        f'New Contact Form Submission from {name}',
+        message,
+        email,
+        ['support@de-commerce.com'],
+        fail_silently=False,
+    )
+
+    return Response({'message': 'Your message has been sent successfully'})

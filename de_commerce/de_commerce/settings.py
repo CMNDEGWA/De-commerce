@@ -77,6 +77,13 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
+# Add CSRF trusted origins for development
+default_csrf_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+CSRF_TRUSTED_ORIGINS = getattr(globals(), "CSRF_TRUSTED_ORIGINS", []) + default_csrf_origins
+
 ROOT_URLCONF = 'de_commerce.urls'
 
 TEMPLATES = [
