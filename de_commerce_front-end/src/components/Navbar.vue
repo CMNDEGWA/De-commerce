@@ -50,6 +50,13 @@
           </router-link>
         </li>
 
+        <!-- Reset Password Link - For unauthenticated users -->
+        <li class="nav-item" v-if="!isAuthenticated">
+          <router-link class="nav-link" to="/reset-password" active-class="active-page">
+            Reset Password
+          </router-link>
+        </li>
+
         <!-- Authenticated User Menu: Profile and Logout -->
         <!-- v-else (implicit from v-if): Show for logged-in users -->
         <template v-else>
