@@ -6,11 +6,11 @@
           <div class="hero-image-wrapper">
             <div class="hero-content">
               <h1 class="hero-title">Karibu<br/> Kwa Jirani, The Merchants.</h1>
-              <p class="hero-lead"><em>Jirani:</em> It is a Swahili word meaining Neighbor.</p>
+              <p class="hero-lead"><em>Jirani:</em> It is a Swahili word meaning Neighbor.</p>
             </div>
             <img src="../assets/img/Merchants.jpg" alt="Shopping" class="hero-img" />
-              <div class="cta-wrapper">
-                <button class="get-started-btn" @click="fetchProducts" >GET STARTED</button>
+              <div class="cta-wrapper" v-if="!isAuthenticated">
+                <button class="get-started-btn" @click="fetchProducts">GET STARTED</button>
                 <div class="login-prompt">
                   <span>Already have an account?</span>
                   <router-link to="/login" class="login-link">Login</router-link>
@@ -48,30 +48,7 @@
             <h2>Our Values & Commitments</h2>
             <ul>
               <li><strong>Integrity:</strong> We operate with honesty, transparency, and respect for all.</li>
-              <li><strong>Community:</strong> We foster a sense of belonging and uplift local entrepreneurs.</li>
-              <li><strong>Innovation:</strong> We embrace creativity and technology to deliver exceptional experiences.</li>
-              <li><strong>Sustainability:</strong> We are committed to eco-friendly practices and responsible sourcing.</li>
-              <li><strong>Inclusivity:</strong> We celebrate diversity and ensure equal opportunities for all.</li>
             </ul>
-          </div>
-          <div class="about-features">
-            <div class="about-feature-box Mission">
-              <h3>Mission</h3>
-              <p>To empower local merchants and artisans by providing a platform that connects them to a global marketplace, fostering economic growth and cultural exchange.</p>
-            </div>
-            <div class="about-feature-box Vision">
-              <h3>Vision</h3>
-              <p>To be a leading force in sustainable commerce, where every transaction supports communities and preserves cultural heritage, aligned with international standards and environmental stewardship.</p>
-            </div>
-            <div class="about-feature-box Goals">
-              <h3>Goals</h3>
-              <ul>
-                <li>Promote fair trade and ethical business practices worldwide.</li>
-                <li>Expand opportunities for local businesses to reach international markets.</li>
-                <li>Champion environmental responsibility in every aspect of our operations.</li>
-                <li>Continuously innovate to enhance user experience and accessibility.</li>
-              </ul>
-            </div>
           </div>
         </div>
       </section>
@@ -79,16 +56,16 @@
   </div>
 </template>
 
-<script>
-import { fetchProducts } from '../services/products';
+<script setup>
+import { ref } from 'vue';
+import { useAuthStore } from '../store/auth';
+import { storeToRefs } from 'pinia';
 
-export default {
-  name: "Home",
-  methods: {
-    highlight(feature) {
-      alert(`Highlighting: ${feature}`);  // Placeholder for interactive feature
-    }
-  }
+const auth = useAuthStore();
+const { isAuthenticated } = storeToRefs(auth);
+
+function fetchProducts() {
+  console.log('Fetching products...');
 }
 </script>
 
