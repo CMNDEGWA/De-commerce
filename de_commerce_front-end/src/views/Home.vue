@@ -10,7 +10,7 @@
             </div>
             <img src="../assets/img/Merchants.jpg" alt="Shopping" class="hero-img" />
               <div class="cta-wrapper" v-if="!isAuthenticated">
-                <button class="get-started-btn" @click="fetchProducts">GET STARTED</button>
+                <router-link to="/products" class="get-started-btn">GET STARTED</router-link>
                 <div class="login-prompt">
                   <span>Already have an account?</span>
                   <router-link to="/login" class="login-link">Login</router-link>
