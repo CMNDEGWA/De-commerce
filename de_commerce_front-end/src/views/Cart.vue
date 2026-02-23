@@ -1,4 +1,3 @@
-
 <template>
   <div class="cart">
     <h2>Your Cart</h2>
@@ -33,8 +32,8 @@
           <span v-if="promoApplied" class="promo-success">Promo applied!</span>
           <span v-else-if="promoCode && !promoApplied" class="promo-error">Invalid code</span>
         </div>
+        <button v-if="isAuthenticated" @click="proceedToCheckout" class="checkout-btn">Checkout</button>
       </div>
-      <!-- Add checkout button here -->
     </div>
     <div v-else>
       <p>Your cart is empty.</p>
@@ -48,6 +47,7 @@ import { fetchCart } from '../services/cart';
 import { useCartStore } from '../store/cart';
 import { useAuthStore } from '../store/auth';
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 
 const cart = ref(null);
 const loading = ref(true);
@@ -58,6 +58,7 @@ const paymentMethod = ref('card');
 const promoCode = ref('');
 const promoApplied = ref(false);
 const discount = ref(0);
+const router = useRouter();
 
 function formatPrice(price) {
   if (price == null) return '';
@@ -78,6 +79,14 @@ function applyPromo() {
     discount.value = 0;
     promoApplied.value = false;
   }
+}
+
+function proceedToCheckout() {
+  if (!isAuthenticated.value) {
+    alert('Please log in to proceed to checkout.');
+    return;
+  }
+  router.push('/checkout');
 }
 
 onMounted(async () => {
@@ -261,6 +270,25 @@ onMounted(async () => {
   font-family: "Jersey 10", sans-serif;
   letter-spacing: 1.4px;
   margin-left: 0.5rem;
+}
+
+.checkout-btn {
+  background-color: var(--paragraph-color);
+  color: var(--background-color);
+  font-family: "Jersey 10", sans-serif;
+  border: none;
+  border-radius: 0;
+  padding: 0.7rem 2rem;
+  font-size: 1.2rem;
+  letter-spacing: 1.4px;
+  cursor: pointer;
+  transition: all 0.7s ease;
+}
+
+.checkout-btn:hover {
+  background: var(--background-color);
+  border: 1.4px solid var(--text-color);
+  color: var(--extra-color);
 }
 
 </style>
