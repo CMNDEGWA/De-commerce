@@ -15,15 +15,15 @@
     <div class="footer-bottom-content">
       <ul class="footer-links-row">
         <div class="footer-links-left">
-          <li><a href="#">Terms of Use</a></li>
-          <li><a href="#">Privacy Policy</a></li>
+          <li><router-link to="/terms-of-use">Terms of Use</router-link></li>
+          <li><router-link to="/privacy-policy">Privacy Policy</router-link></li>
         </div>
         <span class="footer-logo">
           <img src="../assets/JMerchant-Logo.jpg" alt="JMerchant-Logo">
         </span>
         <div class="footer-links-right">
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><router-link to="/cookie-policy">Cookie Policy</router-link></li>
+          <li><router-link to="/contact">Contact</router-link></li>
         </div>
       </ul>
     </div>
