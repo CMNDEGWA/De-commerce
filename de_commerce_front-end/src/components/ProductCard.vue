@@ -131,7 +131,7 @@ function toggleCart() {
   box-shadow: 0 0 25px 5px var(--glow-color);
   width: 70%; /* Adjusted from 700px for better grid fit */
   height: 49vh;
-  padding: 2rem;
+  padding: 3rem;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
