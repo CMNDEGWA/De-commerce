@@ -48,6 +48,11 @@
             <h2>Our Values & Commitments</h2>
             <ul>
               <li><strong>Integrity:</strong> We operate with honesty, transparency, and respect for all.</li>
+              <li><strong>Support:</strong> We are committed to providing exceptional customer support and fostering a community of trust and collaboration.</li>
+              <li><strong>Innovation:</strong> We continuously seek to improve our platform and services to meet the evolving needs of our customers.</li>
+              <li><strong>Sustainability:</strong> We prioritize eco-friendly practices and support products that contribute to a healthier planet.</li>
+              <li><strong>Community:</strong> We are dedicated to building a supportive community where everyone feels valued and heard.</li>
+              <li><strong>Feedback:</strong> We value your input and use it to continuously improve our services.</li>
             </ul>
           </div>
         </div>
