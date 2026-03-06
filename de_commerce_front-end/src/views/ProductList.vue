@@ -36,7 +36,7 @@
 
       <div class="products-columns">
         <ProductCard 
-          v-for="product in filteredProducts" 
+          v-for="product in paginatedProducts" 
           :key="product.id" 
           :product="product"
           :show-quick-add="true"
@@ -47,6 +47,15 @@
 
       <div v-if="filteredProducts.length === 0" class="no-results">
         <p>No products found in this category.</p>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination-wrapper">
+        <ul class="pagination">
+          <li v-for="page in totalPages" :key="page" :class="['page-item', { active: page === currentPage }]">
+            <button class="page-link" @click="goToPage(page)">{{ page }}</button>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -67,9 +76,31 @@ const selectedCategoryName = computed(() => {
   return cat ? cat.name : null;
 });
 
+
 const filteredProducts = computed(() => {
   if (!selectedCategory.value) return products.value;
   return products.value.filter(p => p.category && p.category.id === selectedCategory.value);
+});
+
+// Pagination logic
+const PRODUCTS_PER_PAGE = 7;
+const currentPage = ref(1);
+const totalPages = computed(() => {
+  // Always show at least 1 page
+  return Math.max(1, Math.ceil(filteredProducts.value.length / PRODUCTS_PER_PAGE));
+});
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * PRODUCTS_PER_PAGE;
+  return filteredProducts.value.slice(start, start + PRODUCTS_PER_PAGE);
+});
+function goToPage(page) {
+  currentPage.value = page;
+}
+
+// Reset to page 1 when filter changes
+import { watch } from 'vue';
+watch(filteredProducts, () => {
+  currentPage.value = 1;
 });
 
 onMounted(async () => {
@@ -205,6 +236,28 @@ onMounted(async () => {
   padding: 5rem;
   font-size: 1.2rem;
   color: var(--extra-color);
+}
+
+.pagination-wrapper {
+  padding: 0 0.7rem;
+}
+
+.pagination-wrapper .pagination .page-link {
+  color: var(--paragraph-color);
+  background-color: var(--background-color);
+  border: 1.4px solid var(--extra-color);
+  border-radius: 0;
+  font-family: "Jersey 10", sans-serif;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.7s ease;
+}
+
+.pagination-wrapper .pagination .page-link:hover {
+  border: 1.4px solid var(--paragraph-color);
+  color: var(--background-color);
+  background-color: var(--paragraph-color);
+
 }
 
 @media (max-width: 768px) {
