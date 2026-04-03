@@ -6,7 +6,7 @@
           <div class="hero-image-wrapper">
             <div class="hero-content">
               <h1 class="hero-title">Karibu<br/> Kwa Jirani, The Merchants.</h1>
-              <p class="hero-lead"><em>Jirani:</em> It is a Swahili word meaning Neighbor.</p>
+              <p class="hero-lead"><em>Jirani:</em> It is a Swahili Word. Means Neighbor.</p>
             </div>
             <img src="../assets/img/Merchants.jpg" alt="Shopping" class="hero-img" />
               <div class="cta-wrapper" v-if="!isAuthenticated">
