@@ -13,6 +13,7 @@ class ProductAdmin(admin.ModelAdmin):
 	list_display = ('name', 'category', 'price', 'admin_image')
 	list_filter = ('category',)
 	search_fields = ('name',)
+	fields = ('name', 'description', 'price', 'category', 'image', 'more_description', 'specifications', 'stock_status')
 
 	def admin_image(self, obj):
 		if obj.image:

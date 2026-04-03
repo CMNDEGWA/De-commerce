@@ -86,14 +86,16 @@ function toggleCart() {
 }
 
 // Accordion state
-const accordions = ref([
-  { title: 'More Description', content: 'This is additional information about the product.', open: false },
-  { title: 'Specifications', content: 'These are the product specifications.', open: false },
-  { title: 'In Stock', content: 'Here are some customer reviews.', open: false },
+const accordionOpenStates = ref([false, false, false]);
+
+const accordions = computed(() => [
+  { title: 'More Description', content: product.value?.more_description || 'No additional information available.', open: accordionOpenStates.value[0] },
+  { title: 'Specifications', content: product.value?.specifications || 'No specifications available.', open: accordionOpenStates.value[1] },
+  { title: 'Stock Status', content: product.value?.stock_status || 'Stock status not available.', open: accordionOpenStates.value[2] },
 ]);
 
 function toggleAccordion(index) {
-  accordions.value[index].open = !accordions.value[index].open;
+  accordionOpenStates.value[index] = !accordionOpenStates.value[index];
 }
 
 onMounted(async () => {

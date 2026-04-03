@@ -67,6 +67,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     image = models.ImageField(upload_to='product_images/', blank=True, null=True)  # New field for product images
+    more_description = models.TextField(blank=True, help_text="Additional detailed description for the product")
+    specifications = models.TextField(blank=True, help_text="Product specifications and technical details")
+    stock_status = models.CharField(max_length=100, blank=True, help_text="Current stock availability status (e.g., 'In Stock', 'Out of Stock', 'Limited Stock')")
 
     def __str__(self):
         return self.name

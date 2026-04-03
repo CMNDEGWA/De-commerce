@@ -77,7 +77,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     # Serializer for Product model
-    # Fields: id, name, description, price, category (nested), image
+    # Fields: id, name, description, price, category (nested), image, more_description, specifications, stock_status
     # Key Feature: Nested 'category' field includes full category data
     # API Endpoints: GET /api/products/, GET /api/products/{id}/ (NO LOGIN - AllowAny)
     # ViewSet: ProductViewSet (read-only, uses ReadOnlyModelViewSet)
@@ -85,7 +85,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'category', 'image']
+        fields = ['id', 'name', 'description', 'price', 'category', 'image', 'more_description', 'specifications', 'stock_status']
 
 # ============================================================================
 # CART SERIALIZERS (REQUIRES LOGIN - IsAuthenticated)

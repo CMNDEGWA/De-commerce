@@ -21,8 +21,12 @@
 
 import axios from 'axios';
 
+// Default to /api/ for same-origin development, or use environment value if set.
+// This avoids 404 errors when VITE_API_BASE_URL is missing in .env.
+const baseURL = import.meta.env.VITE_API_BASE_URL || '/api/';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL,
   withCredentials: true // Enable if using session/cookie auth
 });
 
