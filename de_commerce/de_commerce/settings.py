@@ -84,6 +84,15 @@ default_csrf_origins = [
 ]
 CSRF_TRUSTED_ORIGINS = getattr(globals(), "CSRF_TRUSTED_ORIGINS", []) + default_csrf_origins
 
+# CSRF Cookie Configuration
+# These settings ensure the CSRF token cookie is properly set and accessible to frontend
+# - CSRF_COOKIE_SECURE: Set to True in production with HTTPS (currently False for development)
+# - CSRF_COOKIE_HTTPONLY: Must be False so JavaScript can read the cookie for X-CSRFToken header
+# - CSRF_COOKIE_SAMESITE: 'Lax' allows safe cross-origin requests while preventing CSRF attacks
+CSRF_COOKIE_SECURE = False  # Change to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = False  # Must be False - frontend JavaScript needs to read this cookie
+CSRF_COOKIE_SAMESITE = 'Lax'  # 'Lax' is safer than 'Strict' for cross-origin requests
+
 ROOT_URLCONF = 'de_commerce.urls'
 
 TEMPLATES = [

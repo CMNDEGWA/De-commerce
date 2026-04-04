@@ -97,16 +97,16 @@ const accordions = computed(() => [
   { title: 'Specifications', content: product.value?.specifications || 'No specifications available.', open: accordionOpenStates.value[1] },
   { title: 'Stock Status', content: product.value?.stock_status || 'Stock status not available.', open: accordionOpenStates.value[2] },
 ]);
-props.id);
-    product.value = response.data;
-    cart
+
+function toggleAccordion(index) {
+  accordionOpenStates.value[index] = !accordionOpenStates.value[index];
+}
 
 onMounted(async () => {
   try {
-    const response = await fetchProduct(route.params.id);
+    const response = await fetchProduct(props.id);
     product.value = response.data;
     cart.load();
-    orders.load();
   } catch (error) {
     product.value = null;
   }
