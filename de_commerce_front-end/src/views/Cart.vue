@@ -67,7 +67,8 @@ function formatPrice(price) {
 
 function removeItem(itemId) {
   if (!cart.value) return;
-  cart.value.items = cart.value.items.filter(item => item.id !== itemId);
+  cartStore.remove(itemId);
+  cart.value.items = cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity }));
 }
 
 function applyPromo() {
@@ -90,22 +91,26 @@ function proceedToCheckout() {
 }
 
 onMounted(async () => {
-  // Always load local cart from localStorage for instant UI
+  // Load local cart from localStorage first for instant UI.
   cartStore.load();
+  cart.value = { items: cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity })) };
 
   if (isAuthenticated.value) {
     try {
       const response = await fetchCart();
-      cart.value = Array.isArray(response.data) ? response.data[0] : response.data;
+      const backendCart = Array.isArray(response.data) ? response.data[0] : response.data;
+
+      if (backendCart?.items?.length) {
+        cart.value = backendCart;
+      }
     } catch (error) {
-      // If backend cart fetch fails, fall back to local cart store
+      // When backend cart fetch fails or returns empty, keep local cart state.
       cart.value = { items: cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity })) };
     } finally {
       loading.value = false;
     }
   } else {
     // Unauthenticated users see local cart only
-    cart.value = { items: cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity })) };
     loading.value = false;
   }
 });

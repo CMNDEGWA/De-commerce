@@ -55,14 +55,19 @@ import { useRoute, useRouter } from 'vue-router';
 import { fetchProduct } from '../services/products';
 import { useAuthStore } from '../store/auth';
 import { useCartStore } from '../store/cart';
-import { useOrderStore } from '../store/orders';
 import { storeToRefs } from 'pinia';
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: true
+  }
+});
 
 const route = useRoute();
 const router = useRouter();
 const product = ref(null);
 const cart = useCartStore();
-const orders = useOrderStore();
 const auth = useAuthStore();
 const { isAuthenticated } = storeToRefs(auth);
 
@@ -79,7 +84,6 @@ function toggleCart() {
   if (!product.value) return;
   if (inCart.value) {
     cart.remove(product.value.id);
-    orders.addOrder(product.value, 'pending');
   } else {
     cart.add(product.value, 1);
   }
@@ -93,10 +97,9 @@ const accordions = computed(() => [
   { title: 'Specifications', content: product.value?.specifications || 'No specifications available.', open: accordionOpenStates.value[1] },
   { title: 'Stock Status', content: product.value?.stock_status || 'Stock status not available.', open: accordionOpenStates.value[2] },
 ]);
-
-function toggleAccordion(index) {
-  accordionOpenStates.value[index] = !accordionOpenStates.value[index];
-}
+props.id);
+    product.value = response.data;
+    cart
 
 onMounted(async () => {
   try {
