@@ -192,6 +192,7 @@ class Order(models.Model):
     Note: Used in Orderserialize for API responses, frontend shows via OrderHistory.vue
     """
     STATUS_CHOICES = [
+        ('ordered', 'Ordered'),
         ('pending', 'Pending'),
         ('shipped', 'Shipped'),
         ('delivered', 'Delivered'),
@@ -200,7 +201,7 @@ class Order(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='pending',
+        default='ordered',
         help_text='Order status',
     )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

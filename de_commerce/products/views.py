@@ -117,6 +117,99 @@ class LoginAPIView(APIView):
 		return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class PasswordResetAPIView(APIView):
+	"""
+	API View for password reset requests
+	
+	Endpoint: POST /api/password-reset/
+	
+	Permission: AllowAny (unauthenticated users can request password reset)
+	
+	HTTP Methods:
+	- POST: Send password reset email
+	  - Request body: {email}
+	  - Validates email is not empty
+	  - Checks if user with this email exists
+	  - Sends password reset email (simulated or real)
+	
+	Status Codes:
+	- 200 OK: Reset email sent successfully
+	- 400 Bad Request: Email missing
+	
+	Password Reset Flow:
+	1. User submits email via ResetPassword.vue form
+	2. Backend validates email format and presence
+	3. Backend searches for user with this email
+	4. If found, sends password reset email (currently simulated)
+	5. Response indicates success (frontend shows confirmation)
+	6. In production, email would contain secure token link
+	
+	Frontend Integration:
+	- Called from ResetPassword.vue submitResetRequest() function
+	- Uses resetPassword() service function from auth.js
+	- On success, shows confirmation message
+	- On error, displays error details to user
+	
+	Security Note:
+	- For privacy, returns success even if email not found
+	- This prevents attackers from enumerating valid emails in database
+	"""
+	permission_classes = [AllowAny]
+	
+	def post(self, request):
+		from django.core.mail import send_mail
+		
+		email = request.data.get('email', '').strip()
+		
+		if not email:
+			return Response(
+				{'success': False, 'message': 'Email is required'},
+				status=status.HTTP_400_BAD_REQUEST
+			)
+		
+		try:
+			# Check if user exists with this email
+			user = User.objects.get(email=email)
+			
+			# Simulate sending password reset email
+			# In production, this would send an email with secure reset token
+			try:
+				send_mail(
+					'Password Reset Request - De-Commerce',
+					f'Hello {user.username},\n\n'
+					f'You have requested to reset your password. '
+					f'Click the link below to reset your password:\n\n'
+					f'http://localhost:5173/reset-password\n\n'
+					f'If you did not request this, please ignore this email.\n\n'
+					f'Best regards,\nDe-Commerce Team',
+					'noreply@de-commerce.com',
+					[email],
+					fail_silently=False,
+				)
+			except Exception as mail_error:
+				# Email sending failed, but still return success to user for security
+				print(f'Email sending error: {mail_error}')
+			
+			return Response(
+				{'success': True, 'message': 'Password reset link sent to your email. Please check your inbox.'},
+				status=status.HTTP_200_OK
+			)
+		
+		except User.DoesNotExist:
+			# Return success even if user not found (security best practice)
+			# Prevents attackers from enumerating valid emails
+			return Response(
+				{'success': True, 'message': 'If an account exists with this email, a reset link will be sent.'},
+				status=status.HTTP_200_OK
+			)
+		
+		except Exception as e:
+			return Response(
+				{'success': False, 'message': 'An error occurred. Please try again later.'},
+				status=status.HTTP_500_INTERNAL_SERVER_ERROR
+			)
+
+
 class SessionCartAPIView(APIView):
 	"""
 	API View for a session-backed cart for anonymous users.

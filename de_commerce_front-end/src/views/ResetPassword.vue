@@ -11,6 +11,7 @@
           {{ loading ? 'Sending...' : 'Send Reset Link' }}
         </button>
         <div v-if="error" class="error-message">{{ error }}</div>
+        <div v-if="success" class="success-message">{{ success }}</div>
       </form>
       <div class="reset-password-links">
         <router-link to="/login" class="reset-password-link">Back to Login</router-link>
@@ -21,31 +22,39 @@
 
 <script setup>
 import { ref } from 'vue';
-import Footer from '../components/Footer.vue';
+import api from '../services/api';
 
 const email = ref('');
 const loading = ref(false);
 const error = ref('');
+const success = ref('');
 
 async function submitResetRequest() {
   loading.value = true;
   error.value = '';
+  success.value = '';
+  
   try {
-    const response = await fetch('/api/password-reset/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email: email.value })
+    const response = await api.post('password-reset/', {
+      email: email.value
     });
-    if (!response.ok) {
-      throw new Error('Failed to send reset link');
-    }
-    alert('Password reset link sent to your email');
+    
+    // Reset form and show success
+    email.value = '';
+    success.value = response.data?.message || 'Password reset link sent to your email!';
+    error.value = '';
+    
+    // Clear success message after 5 seconds
+    setTimeout(() => {
+      success.value = '';
+    }, 5000);
+    
   } catch (err) {
     if (err.response) {
       const { status, data } = err.response;
       let details = [];
+      
+      // Extract error details from various response formats
       if (data && data.errors) {
         if (typeof data.errors === 'string') {
           details.push(data.errors);
@@ -62,9 +71,14 @@ async function submitResetRequest() {
       if (details.length === 0 && data) {
         details = details.concat(Object.values(data).flat());
       }
-      error.value = `Reset failed (HTTP ${status}).\n` + details.join('\n');
+      
+      error.value = details.length > 0 
+        ? `Reset failed (HTTP ${status}).\n` + details.join('\n')
+        : `Reset failed. Server returned HTTP ${status}.`;
+    } else if (err.request) {
+      error.value = 'Reset failed. No response from server. Please check your connection and try again.';
     } else {
-      error.value = 'Reset failed. No response from server.';
+      error.value = 'Reset failed. ' + (err.message || 'Unknown error occurred.');
     }
   } finally {
     loading.value = false;
@@ -182,6 +196,24 @@ async function submitResetRequest() {
   background: var(--text-color);
   padding: 0.5rem;
   border-radius: 0;
+}
+
+.success-message {
+  color: var(--background-color);
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  background: #4CAF50;
+  padding: 0.8rem;
+  border-radius: 0;
+  font-weight: 600;
+  animation: fadeOut 5s ease-in-out;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .reset-password-links {

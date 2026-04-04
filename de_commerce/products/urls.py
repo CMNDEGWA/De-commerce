@@ -53,6 +53,9 @@ urlpatterns = [
     # POST /api/login/ - Authenticate user and create session (AllowAny - no login required)
     path('api/login/', views.LoginAPIView.as_view(), name='api-login'),
     
+    # POST /api/password-reset/ - Password reset request (AllowAny - no login required)
+    path('api/password-reset/', views.PasswordResetAPIView.as_view(), name='api-password-reset'),
+    
     # Session-backed cart for anonymous users (AllowAny)
     path('api/session-cart/', views.SessionCartAPIView.as_view(), name='api-session-cart'),
     

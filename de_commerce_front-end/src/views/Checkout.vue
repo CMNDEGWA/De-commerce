@@ -20,9 +20,10 @@
         <h3>Order Summary</h3>
         <ul>
           <li v-for="item in cart.items" :key="item.id">
-            {{ item.product.name }} (x{{ item.quantity }}) - {{ formatPrice(item.product.price) }}
+            {{ item.product.name }} (x{{ item.quantity }}) - {{ formatPrice(item.product.price * item.quantity) }}
           </li>
         </ul>
+        <p><strong>Total: {{ formatPrice(total) }}</strong></p>
       </div>
       <button type="submit">Place Order</button>
     </form>
@@ -43,7 +44,11 @@ cartStore.load();
 const cart = ref({ items: cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity })) });
 const billing = ref({ name: '', address: '', phone: '' });
 const paymentType = ref('credit');
+const total = ref(0);
 const router = useRouter();
+
+// Calculate total
+total.value = cart.value.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
 
 function formatPrice(price) {
   if (price == null) return '';
@@ -105,19 +110,20 @@ function submitOrder() {
 }
 
 .checkout {
-  max-width: 700px;
+  max-width: 1000px;
   margin: 2rem auto;
-  color: var(--text-color);
+  background: var(--background-color);
   padding: 2rem;
   border-radius: 0;
-  box-shadow: 0 0 40px 10px rgba(82, 255, 134, 0.2); 
+  border: 1.4px solid var(--paragraph-color);
 }
 
 .checkout h2 {
   font-family: "Jersey 10", sans-serif;
   letter-spacing: 1.4px;
-  font-size: 2.8rem;
-  margin: 0.7rem 1.5rem;
+  font-size: 2rem;
+  margin: 0 2rem;
+  color: var(--text-color);
 }
 
 .checkout form {
@@ -132,40 +138,51 @@ function submitOrder() {
   margin: 1.5rem 0;
 }
 
-.form-section h3 {
-  font-family: "Montserrat", sans-serif;
-  letter-spacing: 1.4px;
-  font-size: 1.5rem;
-  margin: 0.5rem 1.5rem;
+.form-section-summary {
+  color: var(--text-color);
 }
 
-input {
+.form-section-billing,
+.form-section-payment,
+.form-section-summary h3 {
+  font-family: "Jersey 10", sans-serif;
+  letter-spacing: 1px;
+  font-size: 1.3rem;
+  margin: 0.5rem 1.5rem;
+  color: var(--text-color);
+}
+
+input, select {
+  font-family: "Jersey 10", sans-serif;
+  padding: 0.4rem 1rem;
+  border-radius: 0;
+  border: 1px solid var(--extra-color);
+  font-size: 1.1rem;
+  letter-spacing: 1.4px;
+  background-color: var(--background-color);
   display: block;
   width: 70%;
   margin: 1.8rem 0;
   margin-left: 1.4rem;
-  padding: 0.7rem;
-  border-radius: 0;
-  border: 1.4px solid var(--text-color);
 }
 
 button[type="submit"] {
-  background: var(--text-color);
+  background-color: var(--paragraph-color);
+  color: var(--background-color);
   font-family: "Jersey 10", sans-serif;
-  letter-spacing: 1.4px;
-  color: var(--extra-color);
   border: none;
   border-radius: 0;
-  padding: 0.7rem 2.2rem;
+  padding: 0.7rem 2rem;
   margin: 0.7rem 1.5rem;
   font-size: 1.2rem;
+  letter-spacing: 1.4px;
   cursor: pointer;
   transition: all 0.7s ease;
 }
 
 button[type="submit"]:hover {
   background: var(--background-color);
+  border: 1.4px solid var(--text-color);
   color: var(--extra-color);
-  border: 1.4px solid var(--extra-color);
 }
 </style>
