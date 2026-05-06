@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
 ]
-# Application definition
 
 # REST Framework settings (basic, can be extended)
 REST_FRAMEWORK = {

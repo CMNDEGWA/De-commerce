@@ -24,7 +24,7 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
 from rest_framework.routers import DefaultRouter
-from .api import CategoryViewSet, ProductViewSet, CartViewSet, OrderViewSet
+from .api import CategoryViewSet, ProductViewSet, CartViewSet, OrderViewSet, create_order, logout_view
 
 
 app_name = 'products'
@@ -56,8 +56,8 @@ urlpatterns = [
     # POST /api/password-reset/ - Password reset request (AllowAny - no login required)
     path('api/password-reset/', views.PasswordResetAPIView.as_view(), name='api-password-reset'),
     
-    # Session-backed cart for anonymous users (AllowAny)
-    path('api/session-cart/', views.SessionCartAPIView.as_view(), name='api-session-cart'),
+    # POST /api/logout/ - Logout user and destroy session (IsAuthenticated)
+    path('api/logout/', logout_view, name='api-logout'),
     
     # Auto-generated routes from DefaultRouter (categories, products, carts, orders)
     path('', include(router.urls)),

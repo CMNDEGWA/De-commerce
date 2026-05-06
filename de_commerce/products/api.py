@@ -16,11 +16,11 @@ Permission system:
 - IsAuthenticatedOrReadOnly: Public read access, authenticated write access
 """
 
-from rest_framework import viewsets, permissions
-from .models import Category, Product, Cart, Order
+from rest_framework import viewsets, permissions, status
+from .models import Category, Product, Cart, Order, OrderItem
 from .serializers import CategorySerializer, ProductSerializer, CartSerializer, OrderSerializer
 from django.core.mail import send_mail
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 
 # ============================================================================
@@ -138,6 +138,28 @@ class CartViewSet(viewsets.ModelViewSet):
 	"""
 	serializer_class = CartSerializer
 	permission_classes = [permissions.IsAuthenticated]
+	
+	def get_queryset(self):
+		"""
+		SECURITY-CRITICAL METHOD: Filters cart items to current user only
+		
+		Returns only the authenticated user's own cart items.
+		This prevents users from accessing or modifying other users' carts.
+		"""
+		return Cart.objects.filter(user=self.request.user).select_related('product')
+	
+	@action(detail=False, methods=['delete'])
+	def clear(self, request):
+		"""
+		Clear all items from the user's cart
+		
+		DELETE /api/carts/clear/
+		
+		Returns: {"message": "Cart cleared successfully"}
+		"""
+		cart_items = Cart.objects.filter(user=request.user)
+		cart_items.delete()
+		return Response({"message": "Cart cleared successfully"})
 
 	def get_queryset(self):
 		"""
@@ -149,20 +171,21 @@ class CartViewSet(viewsets.ModelViewSet):
 		"""
 		return Cart.objects.filter(user=self.request.user)
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(viewsets.ReadOnlyModelViewSet):
 	"""
-	ViewSet for Order model - Full CRUD operations (for authenticated users only)
+	ViewSet for Order model - Read-Only operations for customers
 	
 	Endpoints:
 	- GET /api/orders/: List all orders (user sees only their own orders)
-	- POST /api/orders/: Create new order
 	- GET /api/orders/{id}/: Retrieve specific order details
-	- PUT /api/orders/{id}/: Update entire order (admin only usage)
-	- PATCH /api/orders/{id}/: Partially update order (e.g., status change)
-	- DELETE /api/orders/{id}/: Delete order (rarely used)
+	
+	RESTRICTED METHODS: No POST, PUT, PATCH, DELETE for customers
+	- Orders can only be created via checkout process
+	- Order status updates should be admin-only
+	- Prevents customers from modifying their order history
 	
 	Permission: IsAuthenticated (LOGIN REQUIRED)
-	- Only logged-in users can view/manage orders
+	- Only logged-in users can view orders
 	- Unauthenticated users get 401 Unauthorized response
 	
 	Serializer: OrderSerializer
@@ -171,7 +194,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 	
 	Key Security Feature - get_queryset() method:
 	- Filters Order.objects.filter(user=self.request.user)
-	- Users can ONLY see and manage their own orders
+	- Users can ONLY see their own orders
 	- Prevents unauthorized access to other users' order information
 	
 	Frontend Usage:
@@ -182,13 +205,14 @@ class OrderViewSet(viewsets.ModelViewSet):
 	Order Workflow:
 	1. User adds products to cart (ProductDetail.vue)
 	2. User clicks checkout and proceeds to Checkout.vue
-	3. Order created via POST /api/orders/
+	3. Order created via custom checkout endpoint (not this ViewSet)
 	4. Order automatically assigned to authenticated user
-	5. Order status starts as 'pending'
+	5. Order status starts as 'ordered'
 	6. User can view order history anytime via OrderHistory.vue
 	
 	Order Status Progression:
-	- 'pending': Just created, not yet shipped
+	- 'ordered': Just created, not yet processed
+	- 'pending': Awaiting shipment
 	- 'shipped': Order sent to customer
 	- 'delivered': Order received by customer
 	- 'cancelled': Order was cancelled
@@ -208,7 +232,187 @@ class OrderViewSet(viewsets.ModelViewSet):
 		Returns only the authenticated user's own order objects.
 		This protects sensitive order information from unauthorized access.
 		"""
-		return Order.objects.filter(user=self.request.user)
+		return Order.objects.filter(user=self.request.user).prefetch_related('items__product')
+
+	def create(self, request, *args, **kwargs):
+		"""
+		Custom create method for order placement
+		
+		Creates an order from the user's current cart items.
+		Process:
+		1. Get user's cart and cart items
+		2. Validate cart is not empty
+		3. Create Order with provided data
+		4. Create OrderItem records for each cart item (with current prices)
+		5. Clear the cart
+		6. Return the created order
+		
+		Expected request data:
+		- shipping_address: string
+		- phone_number: string  
+		- payment_method: 'Credit Card' or 'PayPal'
+		"""
+		user = request.user
+		
+		# Get user's cart
+		try:
+			cart = Cart.objects.get(user=user)
+			cart_items = cart.items.select_related('product').all()
+		except Cart.DoesNotExist:
+			return Response(
+				{'error': 'No cart found. Add items to cart before checkout.'}, 
+				status=status.HTTP_400_BAD_REQUEST
+			)
+		
+		if not cart_items:
+			return Response(
+				{'error': 'Cart is empty. Add items before checkout.'}, 
+				status=status.HTTP_400_BAD_REQUEST
+			)
+		
+		# Create the order
+		order_data = request.data.copy()
+		order_data['user'] = user.id
+		order_data['status'] = 'ordered'  # Default status
+		
+		serializer = self.get_serializer(data=order_data)
+		serializer.is_valid(raise_exception=True)
+		order = serializer.save()
+		
+		# Create order items from cart items
+		order_items = []
+		for cart_item in cart_items:
+			order_item = OrderItem.objects.create(
+				order=order,
+				product=cart_item.product,
+				quantity=cart_item.quantity,
+				price=cart_item.product.price  # Store current price at time of order
+			)
+			order_items.append(order_item)
+		
+		# Clear the cart
+		cart_items.delete()
+		
+		# Return the order with items populated
+		order_serializer = self.get_serializer(order)
+		return Response(order_serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+def create_order(request):
+	"""
+	API View for order creation (checkout process)
+	
+	Endpoint: POST /api/create-order/
+	
+	Permission: IsAuthenticated (LOGIN REQUIRED)
+	
+	HTTP Methods:
+	- POST: Create new order from user's cart
+	  - Request body: {shipping_address, phone_number, payment_method}
+	  - Creates Order and OrderItem records from cart
+	  - Clears cart after successful order creation
+	  - Returns: Created order with all details
+	
+	Status Codes:
+	- 201 Created: Order successfully created
+	- 400 Bad Request: Invalid data or empty cart
+	- 401 Unauthorized: User not authenticated
+	
+	Frontend Integration:
+	- Called from Checkout.vue submitOrder() function
+	- Uses createOrder() service function from order.js
+	- On success, redirects to order history page
+	- On error, displays error message to user
+	
+	Security:
+	- User can only create orders from their own cart
+	- Order automatically assigned to authenticated user
+	- Cart cleared only after successful order creation
+	"""
+	if not request.user.is_authenticated:
+		return Response({'error': 'Authentication required'}, status=status.HTTP_401_UNAUTHORIZED)
+	
+	user = request.user
+	
+	# Get user's cart
+	try:
+		cart = Cart.objects.get(user=user)
+		cart_items = cart.items.select_related('product').all()
+	except Cart.DoesNotExist:
+		return Response(
+			{'error': 'No cart found. Add items to cart before checkout.'}, 
+			status=status.HTTP_400_BAD_REQUEST
+		)
+	
+	if not cart_items:
+		return Response(
+			{'error': 'Cart is empty. Add items before checkout.'}, 
+			status=status.HTTP_400_BAD_REQUEST
+		)
+	
+	# Create the order
+	order_data = request.data.copy()
+	order_data['user'] = user.id
+	order_data['status'] = 'ordered'  # Default status
+	
+	serializer = OrderSerializer(data=order_data)
+	if serializer.is_valid():
+		order = serializer.save()
+		
+		# Create order items from cart items
+		order_items = []
+		for cart_item in cart_items:
+			order_item = OrderItem.objects.create(
+				order=order,
+				product=cart_item.product,
+				quantity=cart_item.quantity,
+				price=cart_item.product.price  # Store current price at time of order
+			)
+			order_items.append(order_item)
+		
+		# Clear the cart
+		cart_items.delete()
+		
+		# Return the order with items populated
+		order_serializer = OrderSerializer(order)
+		return Response(order_serializer.data, status=status.HTTP_201_CREATED)
+	
+	return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def logout_view(request):
+	"""
+	API View for user logout
+	
+	Endpoint: POST /api/logout/
+	
+	Permission: IsAuthenticated (but logout should work even if session expired)
+	
+	HTTP Methods:
+	- POST: Destroy user's session
+	  - No request body required
+	  - Calls Django's logout() to clear session
+	  - Returns: Success message
+	
+	Status Codes:
+	- 200 OK: Logout successful
+	- 401 Unauthorized: User not authenticated (but still clears any existing session)
+	
+	Frontend Integration:
+	- Called from Navbar.vue logout() function
+	- Uses logoutUser() service function from auth.js
+	- Frontend also clears local auth state
+	- Redirects to login page
+	
+	Security:
+	- Always returns success to prevent user enumeration
+	- Session cookie invalidated on server side
+	- Frontend handles localStorage cleanup
+	"""
+	from django.contrib.auth import logout
+	logout(request)
+	return Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 def password_reset(request):
