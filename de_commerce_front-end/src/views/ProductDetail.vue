@@ -64,6 +64,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { fetchProduct } from '../services/products';
+import { addToCart, removeFromCart } from '../services/cart';
 import { useAuthStore } from '../store/auth';
 import { useCartStore } from '../store/cart';
 import { storeToRefs } from 'pinia';
@@ -107,12 +108,47 @@ function formatPrice(price) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
 }
 
-function toggleCart() {
+async function toggleCart() {
   if (!product.value) return;
-  if (inCart.value) {
-    cart.remove(product.value.id);
-  } else {
-    cart.add(product.value, 1);
+
+  // Anonymous users: use local store only
+  if (!isAuthenticated.value) {
+    if (inCart.value) {
+      cart.remove(product.value.id);
+    } else {
+      cart.add(product.value, 1);
+    }
+    return;
+  }
+
+  // Authenticated users: sync with backend
+  try {
+    if (inCart.value) {
+      const response = await removeFromCart(product.value.id);
+      const backendCart = Array.isArray(response.data) ? response.data[0] : response.data;
+      // Explicit null check prevents silent failures
+      if (backendCart && backendCart.items !== undefined) {
+        cart.items = backendCart.items.map(i => ({ product: i.product, quantity: i.quantity }));
+      } else {
+        cart.items = [];
+      }
+      cart.save();
+    } else {
+      const response = await addToCart(product.value.id, 1);
+      const backendCart = Array.isArray(response.data) ? response.data[0] : response.data;
+      // Explicit null check prevents silent failures
+      if (backendCart && backendCart.items !== undefined) {
+        cart.items = backendCart.items.map(i => ({ product: i.product, quantity: i.quantity }));
+      } else {
+        cart.items = [];
+      }
+      cart.save();
+    }
+  } catch (error) {
+    console.error('Cart update failed:', error);
+    // Show user-facing error so they know what went wrong
+    const errorMsg = error.response?.data?.error || error.message || 'Unknown error';
+    alert(`Failed to update cart: ${errorMsg}`);
   }
 }
 
