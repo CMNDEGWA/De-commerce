@@ -34,19 +34,29 @@
         </select>
       </div>
 
-      <div class="products-columns">
-        <ProductCard 
-          v-for="product in paginatedProducts" 
-          :key="product.id" 
-          :product="product"
-          :show-quick-add="true"
-          :show-rating="true"
-          :show-availability="true"
-        />
+      <div v-if="loading" class="loading-state">
+        <p>Loading products...</p>
       </div>
 
-      <div v-if="filteredProducts.length === 0" class="no-results">
-        <p>No products found in this category.</p>
+      <div v-else-if="error" class="error-state">
+        <p>{{ error }}</p>
+      </div>
+
+      <div v-else>
+        <div class="products-columns">
+          <ProductCard 
+            v-for="product in paginatedProducts" 
+            :key="product.id" 
+            :product="product"
+            :show-quick-add="true"
+            :show-rating="true"
+            :show-availability="true"
+          />
+        </div>
+
+        <div v-if="filteredProducts.length === 0" class="no-results">
+          <p>No products found in this category.</p>
+        </div>
       </div>
 
       <!-- Pagination Controls -->
@@ -62,13 +72,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import ProductCard from '../components/ProductCard.vue';
 import { fetchProducts, fetchCategories } from '../services/products';
 
 const products = ref([]);
 const categories = ref([]);
 const selectedCategory = ref(null);
+const loading = ref(true);
+const error = ref(null);
+
+function resolveResponseList(data) {
+  if (Array.isArray(data)) return data;
+  if (data?.data && Array.isArray(data.data)) return data.data;
+  if (data?.results && Array.isArray(data.results)) return data.results;
+  return [];
+}
 
 // Helper for Breadcrumbs and SEO Header
 const selectedCategoryName = computed(() => {
@@ -98,27 +117,35 @@ function goToPage(page) {
 }
 
 // Reset to page 1 when filter changes
-import { watch } from 'vue';
 watch(filteredProducts, () => {
   currentPage.value = 1;
 });
 
 onMounted(async () => {
-  try {
-    const [prodRes, catRes] = await Promise.all([
-      fetchProducts(),
-      fetchCategories()
-    ]);
-    
-    // Logic to handle different API response formats
-    products.value = Array.isArray(prodRes.data) ? prodRes.data : (prodRes.data.results || []);
-    categories.value = Array.isArray(catRes.data) ? catRes.data : (catRes.data.results || []);
-    
-  } catch (error) {
-    console.error('Failed to fetch data:', error);
+  loading.value = true;
+  error.value = null;
+
+  const [productsResult, categoriesResult] = await Promise.allSettled([
+    fetchProducts(),
+    fetchCategories()
+  ]);
+
+  if (productsResult.status === 'fulfilled') {
+    products.value = resolveResponseList(productsResult.value.data);
+  } else {
+    console.error('Failed to load products:', productsResult.reason);
     products.value = [];
+    error.value = 'Unable to load products at this time. Please try again later.';
+  }
+
+  if (categoriesResult.status === 'fulfilled') {
+    categories.value = resolveResponseList(categoriesResult.value.data);
+  } else {
+    console.warn('Failed to load categories:', categoriesResult.reason);
     categories.value = [];
   }
+
+  loading.value = false;
 });
 </script>
 
@@ -222,20 +249,16 @@ onMounted(async () => {
   outline: none;
 }
 
-/* Responsive Grid */
-.products-columns {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin-bottom: 5rem;
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  font-size: 1.2rem;
+  color: var(--text-color);
 }
 
-.no-results {
-  text-align: center;
-  padding: 5rem;
-  font-size: 1.2rem;
-  color: var(--extra-color);
+.error-state {
+  color: #b00020;
 }
 
 .pagination-wrapper {

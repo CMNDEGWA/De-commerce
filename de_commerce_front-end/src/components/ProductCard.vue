@@ -105,12 +105,13 @@ function formatPrice(price) {
  * Currently unused - add to cart only on ProductDetail page
  */
 const productImage = computed(() => {
+  if (!props.product) return '';
   return (
-    product.image ||
-    product.image1 ||
-    product.image2 ||
-    product.image3 ||
-    product.image4 ||
+    props.product.image ||
+    props.product.image1 ||
+    props.product.image2 ||
+    props.product.image3 ||
+    props.product.image4 ||
     ''
   );
 });
@@ -128,6 +129,7 @@ function toggleCart() {
   --extra-color: #f15025;
   --paragraph-color: #191919;
   --background-color: #fcfffc;
+  --glow-color: rgba(241, 80, 37, 0.2);
 }
 
 .product-card {
