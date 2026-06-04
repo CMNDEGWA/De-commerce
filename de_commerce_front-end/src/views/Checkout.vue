@@ -18,7 +18,7 @@
       <div class="form-section-summary">
         <h3>Order Summary</h3>
         <ul>
-          <li v-for="item in cart.items" :key="item.id">
+          <li v-for="item in cartStore.items" :key="item.product.id">
             {{ item.product.name }} (x{{ item.quantity }}) - {{ formatPrice(item.product.price * item.quantity) }}
           </li>
         </ul>
@@ -34,35 +34,56 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../store/auth';
 import { useCartStore } from '../store/cart';
 import { storeToRefs } from 'pinia';
 import { createOrder } from '../services/order';
+import { fetchCart } from '../services/cart';
 
 const auth = useAuthStore();
 const { isAuthenticated } = storeToRefs(auth);
 const cartStore = useCartStore();
 cartStore.load();
-const cart = ref({ items: cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity })) });
 const billing = ref({ name: '', address: '', phone: '' });
 const paymentType = ref('Credit Card');
-const total = ref(0);
+const total = computed(() => cartStore.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0));
 const orderError = ref('');
 const orderSuccess = ref('');
 const router = useRouter();
-
-// Calculate total
-const calculateTotal = () => cart.value.items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-total.value = calculateTotal();
 
 function formatPrice(price) {
   if (price == null) return '';
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
 }
 
-function submitOrder() {
+async function syncCart() {
+  if (!isAuthenticated.value) {
+    return;
+  }
+
+  try {
+    const response = await fetchCart();
+    const backendCart = Array.isArray(response.data) ? response.data[0] : response.data;
+    // Explicit null check ensures cart is properly synced
+    if (backendCart && backendCart.items !== undefined) {
+      cartStore.items = backendCart.items.map(i => ({ product: i.product, quantity: i.quantity }));
+      cartStore.save();
+      return backendCart.items.length > 0;
+    }
+
+    orderError.value = 'Cart is empty. Please add items before checkout.';
+    return false;
+  } catch (error) {
+    console.warn('Failed to synchronize cart with backend:', error);
+    orderError.value = `Failed to sync cart: ${error.response?.data?.error || error.message || 'Unknown error'}`;
+    return false;
+  }
+}
+
+
+async function submitOrder() {
   // Require login before placing order
   if (!isAuthenticated.value) {
     router.push('/login');
@@ -72,6 +93,11 @@ function submitOrder() {
   orderError.value = '';
   orderSuccess.value = '';
 
+  const synced = await syncCart();
+  if (!synced) {
+    return;
+  }
+
   const orderData = {
     shipping_address: billing.value.address,
     phone_number: billing.value.phone,
@@ -79,15 +105,16 @@ function submitOrder() {
   };
 
   createOrder(orderData)
-    .then(() => {
+    .then((response) => {
+      const order = response.data;
       orderSuccess.value = 'Your order has been placed successfully.';
       cartStore.clear();
-      router.push('/orders');
+      router.push({ name: 'PaymentPage', params: { id: order.id } });
     })
     .catch((error) => {
       const response = error.response;
       if (response && response.data) {
-        orderError.value = response.data.message || JSON.stringify(response.data);
+        orderError.value = response.data.error || response.data.message || JSON.stringify(response.data);
       } else {
         orderError.value = 'Failed to place order. Please try again.';
       }

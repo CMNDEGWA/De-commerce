@@ -16,6 +16,7 @@ import TermsOfUse from '../views/TermsOfUse.vue';
 import PrivacyPolicy from '../views/PrivacyPolicy.vue';
 import Contact from '../views/Contact.vue';
 import AdminDashboard from '../views/AdminDashboard.vue';
+import PaymentPage from '../views/PaymentPage.vue';
 import { useAuthStore } from '../store/auth';
 
 const routes = [
@@ -24,6 +25,7 @@ const routes = [
   { path: '/products/:id', name: 'ProductDetail', component: ProductDetail, props: true },
   { path: '/cart', name: 'Cart', component: Cart, meta: { requiresAuth: true } },
   { path: '/checkout', name: 'Checkout', component: Checkout, meta: { requiresAuth: true } },
+  { path: '/payments/:id', name: 'PaymentPage', component: PaymentPage, props: true, meta: { requiresAuth: true } },
   { path: '/orders', name: 'OrderHistory', component: OrderHistory, meta: { requiresAuth: true } },
   { path: '/orders/:id', name: 'OrderDetail', component: OrderDetail, props: true, meta: { requiresAuth: true } },
   { path: '/profile', name: 'Profile', component: Profile, meta: { requiresAuth: true } },

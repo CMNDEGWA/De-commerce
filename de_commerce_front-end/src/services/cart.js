@@ -132,6 +132,10 @@ export function addToCart(productId, quantity = 1) {
   return api.post('carts/', { product: productId, quantity });
 }
 
+export function removeFromCart(productId) {
+  return api.delete('carts/remove-item/', { data: { product: productId } });
+}
+
 /**
  * Clear User's Cart
  * 

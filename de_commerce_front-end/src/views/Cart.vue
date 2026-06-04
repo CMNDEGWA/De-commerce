@@ -4,7 +4,7 @@
     <div v-if="loading">Loading cart...</div>
     <div v-else-if="cart && cart.items && cart.items.length">
       <ul>
-        <li v-for="item in cart.items" :key="item.id" class="cart-item">
+        <li v-for="item in cart.items" :key="item.product.id" class="cart-item">
           <div class="item-main">
             <strong>{{ item.product.name }}</strong>
             <span class="item-category"> <em>Category: </em> {{ item.product.category?.name || 'Uncategorized' }}</span>
@@ -12,7 +12,7 @@
             <span class="item-price">Price: {{ formatPrice(item.product.price) }}</span>
           </div>
           <div class="item-actions">
-            <button @click="removeItem(item.id)" class="remove-btn">Remove</button>
+            <button @click="removeItem(item.product.id)" class="remove-btn">Remove</button>
           </div>
         </li>
       </ul>
@@ -43,7 +43,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { fetchCart } from '../services/cart';
+import { fetchCart, removeFromCart } from '../services/cart';
 import { useCartStore } from '../store/cart';
 import { useAuthStore } from '../store/auth';
 import { storeToRefs } from 'pinia';
@@ -65,10 +65,32 @@ function formatPrice(price) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
 }
 
-function removeItem(itemId) {
+async function removeItem(productId) {
   if (!cart.value) return;
-  cartStore.remove(itemId);
-  cart.value.items = cartStore.items.map(i => ({ id: i.product.id, product: i.product, quantity: i.quantity }));
+
+  // Authenticated users: sync with backend
+  if (isAuthenticated.value) {
+    try {
+      const response = await removeFromCart(productId);
+      const backendCart = Array.isArray(response.data) ? response.data[0] : response.data;
+      // Explicit null check prevents silent failures
+      if (backendCart && backendCart.items !== undefined) {
+        cartStore.items = backendCart.items.map(i => ({ product: i.product, quantity: i.quantity }));
+      } else {
+        cartStore.items = [];
+      }
+      cartStore.save();
+      cart.value = backendCart || { items: [] };
+    } catch (error) {
+      console.error('Failed to remove cart item', error);
+      alert(`Failed to remove item: ${error.response?.data?.error || error.message || 'Unknown error'}`);
+    }
+    return;
+  }
+
+  // Anonymous users: use local store only
+  cartStore.remove(productId);
+  cart.value.items = cartStore.items.map(i => ({ product: i.product, quantity: i.quantity }));
 }
 
 function applyPromo() {
