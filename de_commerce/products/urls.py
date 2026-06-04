@@ -65,6 +65,9 @@ urlpatterns = [
 
     # GET /api/me/ - Return authenticated user profile + canonical cart (or session cart if anonymous)
     path('api/me/', views.MeAPIView.as_view(), name='api-me'),
+
+    # POST /api/create-order/ - Create an order from the user's cart and return the created order
+    path('api/create-order/', create_order, name='api-create-order'),
     
     # Auto-generated routes from DefaultRouter (categories, products, carts, orders)
     path('', include(router.urls)),

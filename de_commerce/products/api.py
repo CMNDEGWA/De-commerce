@@ -17,7 +17,7 @@ Permission system:
 """
 
 from rest_framework import viewsets, permissions, status
-from .models import Category, Product, Cart, Order, OrderItem
+from .models import Category, Product, Cart, CartItem, Order, OrderItem
 from .serializers import CategorySerializer, ProductSerializer, CartSerializer, OrderSerializer, UserSerializer, AdminOrderSerializer, AdminCreateSerializer
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -109,77 +109,104 @@ class CartViewSet(viewsets.ModelViewSet):
 	ViewSet for Cart model - Full CRUD operations (for authenticated users only)
 	
 	Endpoints:
-	- GET /api/carts/: List all carts (user sees only their own cart)
-	- POST /api/carts/: Create/add items to cart
-	- GET /api/carts/{id}/: Retrieve specific cart
-	- PUT /api/carts/{id}/: Update entire cart
-	- PATCH /api/carts/{id}/: Partially update cart
-	- DELETE /api/carts/{id}/: Delete cart
-	- DELETE /api/carts/clear/: Custom action to clear all items
+	- GET /api/carts/: List the current user's cart
+	- POST /api/carts/: Add an item to the current user's cart
+	- GET /api/carts/{id}/: Retrieve the current user's cart
+	- DELETE /api/carts/clear/: Clear all items from the current user's cart
+	- DELETE /api/carts/remove-item/: Remove a specific product from the user's cart
 	
 	Permission: IsAuthenticated (LOGIN REQUIRED)
-	- Only logged-in users can access any cart operations
+	- Only logged-in users can access cart operations
 	- Unauthenticated users get 401 Unauthorized response
 	
 	Serializer: CartSerializer
 	- Returns: id, user, created_at, items (nested CartItem objects)
-	
-	Key Security Feature - get_queryset() method:
-	- CRITICAL FOR SECURITY: Filters Cart.objects.filter(user=self.request.user)
-	- Users can ONLY see and modify their own cart
-	- Even if user tries to access another user's cart ID, filtered out
-	- Prevents unauthorized access to other users' shopping carts
-	
-	Frontend Usage:
-	- Cart.vue: Fetches user's cart to display items
-	- Checkout.vue: Shows cart summary before placing order
-	- AddToCart button on ProductDetail.vue adds to cart
-	
-	Workflow:
-	1. User adds product to cart (ProductDetail.vue handleAddCart)
-	2. Frontend cart store updated locally via useCartStore.add()
-	3. When user checks out, order is created from cart items
-	4. Cart persists across sessions (localStorage on frontend)
-	
-	Notes:
-	- Cart is one-to-one per user (defined in Cart model)
-	- CartItems accessed through nested 'items' field
-	- Uses select_related('product') for efficient database queries
 	"""
 	serializer_class = CartSerializer
 	permission_classes = [permissions.IsAuthenticated]
 	
 	def get_queryset(self):
 		"""
-		SECURITY-CRITICAL METHOD: Filters cart items to current user only
-		
-		Returns only the authenticated user's own cart items.
-		This prevents users from accessing or modifying other users' carts.
+		Filters cart objects to the authenticated user only.
 		"""
-		return Cart.objects.filter(user=self.request.user).select_related('product')
-	
+		return Cart.objects.filter(user=self.request.user)
+
+	def create(self, request, *args, **kwargs):
+		"""
+		Add or update a cart item for the authenticated user.
+		
+		Expected request data:
+		- product: Product ID
+		- quantity: Quantity to add (default 1)
+		"""
+		product_id = request.data.get('product') or request.data.get('product_id')
+		if product_id is None:
+			return Response({'error': 'Product id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		try:
+			product = Product.objects.get(id=product_id)
+		except Product.DoesNotExist:
+			return Response({'error': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+		try:
+			quantity = int(request.data.get('quantity', 1))
+		except (TypeError, ValueError):
+			quantity = 1
+
+		if quantity <= 0:
+			return Response({'error': 'Quantity must be at least 1.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		cart, _ = Cart.objects.get_or_create(user=request.user)
+		cart_item, created = CartItem.objects.get_or_create(
+			cart=cart,
+			product=product,
+			defaults={'quantity': quantity}
+		)
+		if not created:
+			cart_item.quantity += quantity
+			cart_item.save()
+
+		return Response(CartSerializer(cart).data, status=status.HTTP_201_CREATED)
+
+	@action(detail=False, methods=['delete'], url_path='remove-item')
+	def remove_item(self, request):
+		"""
+		Remove a specific product from the authenticated user's cart.
+		
+		Expected request data:
+		- product: Product ID to remove
+		"""
+		product_id = request.data.get('product') or request.data.get('product_id') or request.query_params.get('product')
+		if product_id is None:
+			return Response({'error': 'Product id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		try:
+			product = Product.objects.get(id=product_id)
+		except Product.DoesNotExist:
+			return Response({'error': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+		try:
+			cart = Cart.objects.get(user=request.user)
+		except Cart.DoesNotExist:
+			return Response({'error': 'Cart is empty.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		cart_item = CartItem.objects.filter(cart=cart, product=product).first()
+		if not cart_item:
+			return Response({'error': 'Item not found in cart.'}, status=status.HTTP_400_BAD_REQUEST)
+
+		cart_item.delete()
+		return Response(CartSerializer(cart).data, status=status.HTTP_200_OK)
+
 	@action(detail=False, methods=['delete'])
 	def clear(self, request):
 		"""
 		Clear all items from the user's cart
 		
 		DELETE /api/carts/clear/
-		
-		Returns: {"message": "Cart cleared successfully"}
 		"""
 		cart_items = Cart.objects.filter(user=request.user)
 		cart_items.delete()
 		return Response({"message": "Cart cleared successfully"})
-
-	def get_queryset(self):
-		"""
-		SECURITY-CRITICAL METHOD: Filters cart to current user only
-		
-		Returns only the authenticated user's own cart objects.
-		This ensures users cannot access other users' shopping carts
-		even if they know the cart ID.
-		"""
-		return Cart.objects.filter(user=self.request.user)
 
 class OrderViewSet(viewsets.ReadOnlyModelViewSet):
 	"""
