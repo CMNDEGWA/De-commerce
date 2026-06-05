@@ -8,13 +8,6 @@
         <input v-model="billing.address" placeholder="Billing Address" required />
         <input v-model="billing.phone" placeholder="Phone Number" required />
       </div>
-      <div class="form-section-payment">
-        <h3>Payment Type</h3>
-        <select v-model="paymentType" required>
-          <option value="Credit Card">Credit Card</option>
-          <option value="PayPal">PayPal</option>
-        </select>
-      </div>
       <div class="form-section-summary">
         <h3>Order Summary</h3>
         <ul>
@@ -159,16 +152,12 @@ async function submitOrder() {
   margin-bottom: 1.5rem;
 }
 
-.form-section-payment {
-  margin: 1.5rem 0;
-}
 
 .form-section-summary {
   color: var(--text-color );
 }
 
 .form-section-billing,
-.form-section-payment,
 .form-section-summary h3 {
   font-family: "Jersey 10", sans-serif;
   letter-spacing: 1px;
